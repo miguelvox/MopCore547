@@ -61,7 +61,7 @@
 HANDLE WorldMpq = NULL;
 HANDLE LocaleMpq = NULL;
 
-uint32 CONF_TargetBuild = 17399;              // 5.4.0.17399
+uint32 CONF_TargetBuild = 18273;              // 5.4.8 18273 -- current build is 18414, but Blizz didnt rename the MPQ files
 
 // List MPQ for extract maps from
 char const* CONF_mpq_list[]=
@@ -75,7 +75,7 @@ char const* CONF_mpq_list[]=
     "expansion4.MPQ", // added in 5.x.x
 };
 
-uint32 const Builds[] = {16016, 16048, 16057, 16309, 16357, 16516, 16650, 16844, 16965, 17116, 17266, 17345, 17538, 0};
+uint32 const Builds[] = {16016, 16048, 16057, 16309, 16357, 16516, 16650, 16844, 16965, 17116, 17266, 17325, 17345, 17538, 17645, 17688, 17898, 18273, 18414, 0};
 #define LAST_DBC_IN_DATA_BUILD 15595    // after this build mpqs with dbc are back to locale folder
 #define NEW_BASE_SET_BUILD 16016 // 15211
 
@@ -186,6 +186,9 @@ void LoadCommonMPQFiles(uint32 build)
     int count = sizeof(CONF_mpq_list) / sizeof(char*);
     for (int i = 1; i < count; ++i)
     {
+        if (build < 15211 && !strcmp("world2.MPQ", CONF_mpq_list[i]))   // 4.3.2 and higher MPQ
+            continue;
+
         _stprintf(filename, _T("%s%s"), input_path, CONF_mpq_list[i]);
         if (!SFileOpenPatchArchive(WorldMpq, filename, "", 0))
         {
@@ -198,6 +201,7 @@ void LoadCommonMPQFiles(uint32 build)
             _tprintf(_T("Loaded %s\n"), filename);
     }
 
+    char const* prefix = NULL;
     for (int i = 0; Builds[i] && Builds[i] <= CONF_TargetBuild; ++i)
     {
         // Do not attempt to read older MPQ patch archives past this build, they were merged with base
@@ -206,9 +210,18 @@ void LoadCommonMPQFiles(uint32 build)
             continue;
 
         memset(filename, 0, sizeof(filename));
-        _stprintf(filename, _T("%swow-update-base-%u.MPQ"), input_path, Builds[i]);
- 
-        if (!SFileOpenPatchArchive(WorldMpq, filename, "base", 0))
+        if (Builds[i] > LAST_DBC_IN_DATA_BUILD)
+        {
+            prefix = "";
+            _stprintf(filename, _T("%swow-update-base-%u.MPQ"), input_path, Builds[i]);
+        }
+        else
+        {
+            prefix = "base";
+            _stprintf(filename, _T("%swow-update-%u.MPQ"), input_path, Builds[i]);
+        }
+
+        if (!SFileOpenPatchArchive(WorldMpq, filename, prefix, 0))
         {
             if (GetLastError() != ERROR_PATH_NOT_FOUND)
                 _tprintf(_T("Cannot open patch archive %s\n"), filename);
@@ -256,12 +269,12 @@ void ReadLiquidTypeTableDBC()
     {   // Use misc.mpq
         printf(localMPQ, "%s/Data/%s/locale-%s.MPQ", input_path);
     }
-    
+
     if (!SFileOpenArchive(localMPQ, 0, MPQ_OPEN_READ_ONLY, &localeFile))
     {
         exit(1);
     }
-    
+
     printf("Read LiquidType.dbc file...");
 
     HANDLE dbcFile;
@@ -289,7 +302,7 @@ void ReadLiquidTypeTableDBC()
     for (uint32 x = 0; x < LiqType_count; ++x)
         LiqType[dbc.getRecord(x).getUInt(0)] = dbc.getRecord(x).getUInt(3);
 
-    printf("Done! (%lu LiqTypes loaded)\n", LiqType_count);
+    printf("Done! (%lu LiqTypes loaded)\n", (unsigned long)LiqType_count);
 }
 
 bool ExtractWmo()
@@ -406,7 +419,7 @@ void ParsMapFiles()
     char id[10];
     for (unsigned int i = 0; i < map_count; ++i)
     {
-        sprintf(id, "%03u", map_ids[i].id);
+        sprintf(id, "%04u", map_ids[i].id);
         sprintf(fn, "World\\Maps\\%s\\%s.wdt", map_ids[i].name, map_ids[i].name);
         WDTFile WDT(fn, map_ids[i].name);
         if(WDT.init(id, map_ids[i].id))

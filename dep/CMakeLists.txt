@@ -22,6 +22,7 @@ if(SERVERS OR TOOLS)
   add_subdirectory(jemalloc)
   add_subdirectory(openssl)
   add_subdirectory(mysql)
+  add_subdirectory(recastnavigation)
 endif()
   
 if(SERVERS)

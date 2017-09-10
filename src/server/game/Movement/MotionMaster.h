@@ -25,6 +25,7 @@
 #include "Object.h"
 
 class MovementGenerator;
+class PathGenerator;
 class Unit;
 
 // Creature Entry ID used for waypoints show, visible only for GMs
@@ -173,7 +174,8 @@ class MotionMaster
         void MoveTakeoff(uint32 id, Position const& pos);
         void MoveTakeoff(uint32 id, float x, float y, float z);
 
-        void MoveCharge(float x, float y, float z, float speed = SPEED_CHARGE, uint32 id = EVENT_CHARGE);
+        void MoveCharge(float x, float y, float z, float speed = SPEED_CHARGE, uint32 id = EVENT_CHARGE, bool generatePath = false, Unit const* target = nullptr);
+        void MoveCharge(PathGenerator const& path, float speed = SPEED_CHARGE, Unit const* target = nullptr);
         void MoveKnockbackFrom(float srcX, float srcY, float speedXY, float speedZ);
         void MoveJumpTo(float angle, float speedXY, float speedZ);
         void MoveJump(Position const& pos, float speedXY, float speedZ, uint32 id = EVENT_JUMP) { MoveJump(pos.m_positionX, pos.m_positionY, pos.m_positionZ, speedXY, speedZ, id); };

@@ -375,7 +375,7 @@ class Map : public GridRefManager<NGridType>
         bool IsRaidOrHeroicDungeon() const { return IsRaid() || IsNonRaidDungeon() && i_spawnMode == DUNGEON_DIFFICULTY_HEROIC; }
         bool IsHeroic() const { return (IsRaid() && (i_spawnMode == RAID_DIFFICULTY_10MAN_HEROIC || i_spawnMode == RAID_DIFFICULTY_25MAN_HEROIC) ||
             IsNonRaidDungeon() && i_spawnMode == DUNGEON_DIFFICULTY_HEROIC || IsScenario() && i_spawnMode == SCENARIO_DIFFICULTY_HEROIC); } // Heroic Raids, Dungeons, Scenarios.
-        bool Is25ManRaid() const { return IsRaid() && (i_spawnMode == RAID_DIFFICULTY_25MAN_NORMAL || i_spawnMode == RAID_DIFFICULTY_25MAN_HEROIC || 
+        bool Is25ManRaid() const { return IsRaid() && (i_spawnMode == RAID_DIFFICULTY_25MAN_NORMAL || i_spawnMode == RAID_DIFFICULTY_25MAN_HEROIC ||
             i_spawnMode == RAID_DIFFICULTY_25MAN_LFR); }   // Raids 25 man Normal, Heroic and LFR.
         bool Is40ManRaid() const { return IsRaid() && i_spawnMode == RAID_DIFFICULTY_40MAN; } // 40 man Raid.
         bool IsScenario() const { return i_mapEntry && i_mapEntry->IsScenario(); } // For future usage.
@@ -491,8 +491,9 @@ class Map : public GridRefManager<NGridType>
         static void DeleteRespawnTimesInDB(uint16 mapId, uint32 instanceId);
 
     private:
-        void LoadMapAndVMap(int gx, int gy);
+        void LoadMMap(int gx, int gy);
         void LoadVMap(int gx, int gy);
+        void LoadMapAndVMap(int gx, int gy);
         void LoadMap(int gx, int gy, bool reload = false);
         GridMap* GetGrid(float x, float y);
 

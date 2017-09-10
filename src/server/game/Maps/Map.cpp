@@ -28,11 +28,13 @@
 #include "InstanceScript.h"
 #include "ObjectAccessor.h"
 #include "MapManager.h"
+#include "MMapFactory.h"
 #include "ObjectMgr.h"
 #include "Group.h"
 #include "LFGMgr.h"
 #include "DynamicTree.h"
 #include "Vehicle.h"
+#include "DisableMgr.h"
 
 union u_map_magic
 {
@@ -69,13 +71,15 @@ Map::~Map()
 
     if (!m_scriptSchedule.empty())
         sScriptMgr->DecreaseScheduledScriptCount(m_scriptSchedule.size());
+
+    MMAP::MMapFactory::createOrGetMMapManager()->unloadMapInstance(GetId(), i_InstanceId);
 }
 
 bool Map::ExistMap(uint32 mapid, int gx, int gy)
 {
-    int len = sWorld->GetDataPath().length()+strlen("maps/%03u%02u%02u.map")+1;
+    int len = sWorld->GetDataPath().length()+strlen("maps/%04u%02u%02u.map")+1;
     char* tmp = new char[len];
-    snprintf(tmp, len, (char *)(sWorld->GetDataPath()+"maps/%03u%02u%02u.map").c_str(), mapid, gx, gy);
+    snprintf(tmp, len, (char *)(sWorld->GetDataPath()+"maps/%04u%02u%02u.map").c_str(), mapid, gx, gy);
 
     bool ret = false;
     FILE* pf=fopen(tmp, "rb");
@@ -115,6 +119,19 @@ bool Map::ExistVMap(uint32 mapid, int gx, int gy)
     }
 
     return true;
+}
+
+void Map::LoadMMap(int gx, int gy)
+{
+    if (!DisableMgr::IsPathfindingEnabled(GetId()))
+        return;
+
+    bool mmapLoadResult = MMAP::MMapFactory::createOrGetMMapManager()->loadMap((sWorld->GetDataPath() + "mmaps").c_str(), GetId(), gx, gy);
+
+    if (mmapLoadResult)
+        sLog->outInfo(LOG_FILTER_MAPS, "MMAP loaded name:%s, id:%d, x:%d, y:%d (mmap rep.: x:%d, y:%d)", GetMapName(), GetId(), gx, gy, gx, gy);
+    else
+        sLog->outInfo(LOG_FILTER_MAPS, "Could not load MMAP name:%s, id:%d, x:%d, y:%d (mmap rep.: x:%d, y:%d)", GetMapName(), GetId(), gx, gy, gx, gy);
 }
 
 void Map::LoadVMap(int gx, int gy)
@@ -165,9 +182,9 @@ void Map::LoadMap(int gx, int gy, bool reload)
 
     // map file name
     char *tmp=NULL;
-    int len = sWorld->GetDataPath().length()+strlen("maps/%03u%02u%02u.map")+1;
+    int len = sWorld->GetDataPath().length()+strlen("maps/%04u%02u%02u.map")+1;
     tmp = new char[len];
-    snprintf(tmp, len, (char *)(sWorld->GetDataPath()+"maps/%03u%02u%02u.map").c_str(), GetId(), gx, gy);
+    snprintf(tmp, len, (char *)(sWorld->GetDataPath()+"maps/%04u%02u%02u.map").c_str(), GetId(), gx, gy);
     sLog->outInfo(LOG_FILTER_MAPS, "Loading map %s", tmp);
     // loading data
     GridMaps[gx][gy] = new GridMap();
@@ -181,8 +198,12 @@ void Map::LoadMap(int gx, int gy, bool reload)
 void Map::LoadMapAndVMap(int gx, int gy)
 {
     LoadMap(gx, gy);
+   // Only load the data for the base map
     if (i_InstanceId == 0)
-        LoadVMap(gx, gy);                                   // Only load the data for the base map
+    {
+        LoadVMap(gx, gy);
+        LoadMMap(gx, gy);
+    }
 }
 
 void Map::InitStateMachine()
@@ -912,6 +933,7 @@ bool Map::UnloadGrid(NGridType& ngrid, bool unloadAll)
             }
             // x and y are swapped
             VMAP::VMapFactory::createOrGetVMapManager()->unloadMap(GetId(), gx, gy);
+            MMAP::MMapFactory::createOrGetMMapManager()->unloadMap(GetId(), gx, gy);
         }
         else
             ((MapInstanced*)m_parentMap)->RemoveGridMapReference(GridCoord(gx, gy));
@@ -1512,7 +1534,7 @@ inline GridMap* Map::GetGrid(float x, float y)
     // half opt method
     int gx=(int)(32-x/SIZE_OF_GRIDS);                       //grid x
     int gy=(int)(32-y/SIZE_OF_GRIDS);                       //grid y
- 
+
     if (gx >= MAX_NUMBER_OF_GRIDS || gy >= MAX_NUMBER_OF_GRIDS ||
         gx < 0 || gy < 0)
         return NULL;
@@ -1589,7 +1611,7 @@ float Map::GetHeight(float x, float y, float z, bool checkVMap /*= true*/, float
             return VMAP_INVALID_HEIGHT_VALUE;               // we not have any height
     }
 
-   //return mapHeight; 
+   //return mapHeight;
 }
 
 inline bool IsOutdoorWMO(uint32 mogpFlags, int32 /*adtId*/, int32 /*rootId*/, int32 /*groupId*/, WMOAreaTableEntry const* wmoEntry, AreaTableEntry const* atEntry)
@@ -1672,11 +1694,11 @@ uint16 Map::GetAreaFlag(float x, float y, float z, bool *isOutdoors) const
 
     uint16 areaflag;
 
-	// Fix Tigers Peak.
+    // Fix Tigers Peak.
     if (this->GetId() == 1134)
         atEntry = sAreaStore.LookupEntry(5364);
 
-	// Fix Deepwind Gorge.
+    // Fix Deepwind Gorge.
     if (this->GetId() == 1105)
         atEntry = sAreaStore.LookupEntry(5299);
 
@@ -2915,4 +2937,3 @@ time_t Map::GetLinkedRespawnTime(uint64 guid) const
 
     return time_t(0);
 }
-

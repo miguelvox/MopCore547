@@ -979,7 +979,7 @@ public:
                 // Build the full string.
                 ss2 << "UPDATE creature_addon SET auras = '" << ss1.str().c_str() << "' WHERE guid = " << lowGuid << ";";
 
-                WorldDatabase.DirectExecute(ss2.str().c_str()); 
+                WorldDatabase.DirectExecute(ss2.str().c_str());
             }
             else
             {
@@ -991,7 +991,7 @@ public:
                 // Build the full string.
                 ss1 << "UPDATE creature_addon SET auras = '" << aura1 << "' WHERE guid = " << lowGuid << ";";
 
-                WorldDatabase.DirectExecute(ss1.str().c_str()); 
+                WorldDatabase.DirectExecute(ss1.str().c_str());
             }
         }
         else
@@ -1011,7 +1011,7 @@ public:
                 // Build the full string.
                 ss2 << "INSERT INTO creature_addon (guid, path_id, mount, bytes1, bytes2, emote, auras) VALUES (" << lowGuid << ", 0, 0, 0, 0, 0, '" << ss1.str().c_str() << "');";
 
-                WorldDatabase.DirectExecute(ss2.str().c_str()); 
+                WorldDatabase.DirectExecute(ss2.str().c_str());
             }
             else
             {
@@ -1023,7 +1023,7 @@ public:
                 // Build the full string.
 		        ss1 << "INSERT INTO creature_addon (guid, path_id, mount, bytes1, bytes2, emote, auras) VALUES (" << lowGuid << ", 0, 0, 0, 0, 0, '" << aura1 << "');";
 
-                WorldDatabase.DirectExecute(ss1.str().c_str()); 
+                WorldDatabase.DirectExecute(ss1.str().c_str());
             }
         }
 

@@ -23,6 +23,7 @@
 #include "FollowerReference.h"
 #include "Timer.h"
 #include "Unit.h"
+#include "PathGenerator.h"
 
 class TargetedMovementGeneratorBase
 {
@@ -39,7 +40,7 @@ class TargetedMovementGeneratorMedium : public MovementGeneratorMedium< T, D >, 
 {
     protected:
         TargetedMovementGeneratorMedium(Unit* owner, float offset, float angle, bool useExactTargetLocation = false) :
-			TargetedMovementGeneratorBase(owner), i_recheckDistance(0), i_offset(offset),
+			TargetedMovementGeneratorBase(owner), i_path(nullptr), i_recheckDistance(0), i_offset(offset),
 			i_angle(angle), i_recalculateTravel(false), i_targetReached(false) { }
         ~TargetedMovementGeneratorMedium() { }
 
@@ -51,8 +52,9 @@ class TargetedMovementGeneratorMedium : public MovementGeneratorMedium< T, D >, 
         void UpdateFinalDistance(float fDistance);
 
     protected:
-        void _setTargetLocation(T* owner);
+        void _setTargetLocation(T* owner, bool updateDestination);
 
+        PathGenerator* i_path;
         TimeTrackerSmall i_recheckDistance;
         float i_offset;
         float i_angle;

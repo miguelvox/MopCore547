@@ -387,7 +387,7 @@ void Object::BuildDynamicValuesUpdate(ByteBuffer* data) const
 
             fieldMask |= 1 << index;
         }
-        
+
         if (fieldMask > 0)
             dynamicTabMask |= 1 << i; // Set fields updated.
 
@@ -423,7 +423,7 @@ void Object::BuildDynamicValuesUpdate(ByteBuffer* data) const
 void Object::ClearUpdateMask(bool remove)
 {
     memset(_changedFields, 0, m_valuesCount * sizeof(bool));
-    
+
     if (m_objectUpdated)
     {
         if (_dynamicTabCount > 0)
@@ -1271,7 +1271,7 @@ void WorldObject::SendPlaySound(uint32 Sound, bool OnlySelf)
     ObjectGuid guid = GetGUID();
 
     WorldPacket data(SMSG_PLAY_SOUND, 12);
-    
+
     uint8 bitsOrder[8] = { 1, 6, 7, 5, 4, 3, 0, 2 };
     data.WriteBitInOrder(guid, bitsOrder);
 
@@ -2047,8 +2047,8 @@ Creature* WorldObject::FindNearestCreature(uint32 entry, float range, bool alive
 
 std::list<Creature*> WorldObject::FindNearestCreatures(uint32 entry, float range) const
 {
-    std::list<Creature*> creatureList;    
-    GetCreatureListWithEntryInGrid(creatureList, entry, range);   
+    std::list<Creature*> creatureList;
+    GetCreatureListWithEntryInGrid(creatureList, entry, range);
     return creatureList;
 }
 
@@ -2065,7 +2065,7 @@ std::vector<Creature*> WorldObject::FindNearestCreatures(uint32 entry, float ran
     std::list<Creature*> creatureList;
     std::vector<Creature*> returnList;
     GetCreatureListWithEntryInGrid(creatureList, entry, range);
-    
+
     for (std::list<Creature*>::iterator itr = creatureList.begin(); itr != creatureList.end(); ++itr)
     {
         if ((*itr)->IsAlive() == alive)
@@ -2104,7 +2104,7 @@ std::list<GameObject*> WorldObject::FindNearestGameObjects(uint32 entry, float r
 }
 
 GameObject* WorldObject::FindNearestGameObjectOfType(GameobjectTypes type, float range) const
-{ 
+{
     GameObject* go = NULL;
     MoPCore::NearestGameObjectTypeInObjectRangeCheck checker(*this, type, range);
     MoPCore::GameObjectLastSearcher<MoPCore::NearestGameObjectTypeInObjectRangeCheck> searcher(this, go, checker);
@@ -2123,7 +2123,7 @@ Player* WorldObject::FindNearestPlayer(float range, bool alive)
 
 std::list<Player*> WorldObject::FindNearestPlayers(float range, bool alive)
 {
-    std::list<Player*> PlayerList; 
+    std::list<Player*> PlayerList;
     MoPCore::AnyPlayerInObjectRangeCheck checker(this, range, alive);
     MoPCore::PlayerListSearcher<MoPCore::AnyPlayerInObjectRangeCheck> searcher(this, PlayerList, checker);
     VisitNearbyWorldObject(range, searcher);
@@ -2178,7 +2178,7 @@ void WorldObject::GetCreatureListWithEntryInGrid(std::list<Creature*>& creatureL
 }
 
 void WorldObject::GetPlayerListInGrid(std::list<Player*>& playerList, float maxSearchRange) const
-{    
+{
     MoPCore::AnyPlayerInObjectRangeCheck checker(this, maxSearchRange);
     MoPCore::PlayerListSearcher<MoPCore::AnyPlayerInObjectRangeCheck> searcher(this, playerList, checker);
     this->VisitNearbyWorldObject(maxSearchRange, searcher);

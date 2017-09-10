@@ -17,10 +17,12 @@
  */
 
 #include "DisableMgr.h"
+#include "AchievementMgr.h"
 #include "ObjectMgr.h"
 #include "OutdoorPvP.h"
 #include "SpellMgr.h"
-#include "VMapManager2.h"
+#include "Player.h"
+#include "World.h"
 
 namespace DisableMgr
 {
@@ -37,11 +39,9 @@ namespace
     typedef std::map<uint32, DisableData> DisableTypeMap;
     // global disable map by source
     typedef std::map<DisableType, DisableTypeMap> DisableMap;
-
     DisableMap m_DisableMap;
-
-    uint8 MAX_DISABLE_TYPES = 7;
 }
+
 
 void LoadDisables()
 {
@@ -237,6 +237,18 @@ void LoadDisables()
                 }
                 break;
             }
+            case DISABLE_TYPE_MMAP:
+            {
+                MapEntry const* mapEntry = sMapStore.LookupEntry(entry);
+                if (!mapEntry)
+                {
+                    sLog->outError(LOG_FILTER_SQL, "Map entry %u from `disables` doesn't exist in dbc, skipped.", entry);
+                    continue;
+                }
+                if (mapEntry->map_type <= MAP_SCENARIO)
+                    sLog->outInfo(LOG_FILTER_GENERAL, "Pathfinding disabled for map %u.", entry);
+                break;
+            }
             default:
                 break;
         }
@@ -381,12 +393,24 @@ bool IsDisabledFor(DisableType type, uint32 entry, Unit const* unit, uint8 flags
         case DISABLE_TYPE_BATTLEGROUND:
         case DISABLE_TYPE_OUTDOORPVP:
         case DISABLE_TYPE_ACHIEVEMENT_CRITERIA:
+        case DISABLE_TYPE_MMAP:
             return true;
         case DISABLE_TYPE_VMAP:
            return flags & itr->second.flags;
     }
 
     return false;
+}
+
+bool IsVMAPDisabledFor(uint32 entry, uint8 flags)
+{
+    return IsDisabledFor(DISABLE_TYPE_VMAP, entry, NULL, flags);
+}
+
+bool IsPathfindingEnabled(uint32 mapId)
+{
+    return sWorld->getBoolConfig(CONFIG_ENABLE_MMAPS)
+        && !IsDisabledFor(DISABLE_TYPE_MMAP, mapId, NULL, MMAP_DISABLE_PATHFINDING);
 }
 
 } // Namespace

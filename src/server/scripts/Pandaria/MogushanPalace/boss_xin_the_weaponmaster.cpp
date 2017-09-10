@@ -203,7 +203,7 @@ public:
 
             if (m_lLaunchersList.empty())
             {
-//                TC_LOG_ERROR("scripts", "Xin the Weaponmaster found no world triggers for blade launcher in instance %u", me->GetInstanceId());
+                //sLog->outError(LOG_FILTER_TSCR, "Xin the Weaponmaster found no world triggers for blade launcher in instance %u", me->GetInstanceId());
                 return true;
             }
 

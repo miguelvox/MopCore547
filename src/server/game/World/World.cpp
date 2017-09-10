@@ -54,6 +54,7 @@
 #include "OutdoorPvPMgr.h"
 #include "TemporarySummon.h"
 #include "WaypointMovementGenerator.h"
+#include "MMapFactory.h"
 #include "VMapFactory.h"
 #include "GameEventMgr.h"
 #include "PoolMgr.h"
@@ -80,6 +81,10 @@
 #include "CalendarMgr.h"
 #include "BattlefieldMgr.h"
 #include "BlackMarketMgr.h"
+#include "DBCStores.h"
+#include "VMapFactory.h"
+#include "VMapManager2.h"
+#include "Memory.h"
 
 ACE_Atomic_Op<ACE_Thread_Mutex, bool> World::m_stopEvent = false;
 uint8 World::m_ExitCode = SHUTDOWN_EXIT_CODE;
@@ -145,6 +150,7 @@ World::~World()
         delete command;
 
     VMAP::VMapFactory::clear();
+    MMAP::MMapFactory::clear();
 
     //TODO free addSessQueue
 }
@@ -487,11 +493,11 @@ void World::LoadConfigSettings(bool reload)
     rate_values[RATE_DROP_ITEM_REFERENCED_AMOUNT] = ConfigMgr::GetFloatDefault("Rate.Drop.Item.ReferencedAmount", 1.0f);
     rate_values[RATE_DROP_MONEY]    = ConfigMgr::GetFloatDefault("Rate.Drop.Money", 1.0f);
     rate_values[RATE_XP_KILL]       = ConfigMgr::GetFloatDefault("Rate.XP.Kill", 1.0f);
-	rate_values[RATE_XP_KILL_VIP]   = ConfigMgr::GetFloatDefault("Rate.XP.Kill.VIP", 1.0f);
+    rate_values[RATE_XP_KILL_VIP]   = ConfigMgr::GetFloatDefault("Rate.XP.Kill.VIP", 1.0f);
     rate_values[RATE_XP_QUEST]      = ConfigMgr::GetFloatDefault("Rate.XP.Quest", 1.0f);
-	rate_values[RATE_XP_QUEST_VIP]  = ConfigMgr::GetFloatDefault("Rate.XP.Quest.VIP", 1.0f);
+    rate_values[RATE_XP_QUEST_VIP]  = ConfigMgr::GetFloatDefault("Rate.XP.Quest.VIP", 1.0f);
     rate_values[RATE_XP_EXPLORE]    = ConfigMgr::GetFloatDefault("Rate.XP.Explore", 1.0f);
-	rate_values[RATE_XP_EXPLORE_VIP]  = ConfigMgr::GetFloatDefault("Rate.XP.Explore.VIP", 1.0f);
+    rate_values[RATE_XP_EXPLORE_VIP]  = ConfigMgr::GetFloatDefault("Rate.XP.Explore.VIP", 1.0f);
     rate_values[RATE_XP_GATHERING]  = ConfigMgr::GetFloatDefault("Rate.XP.Gathering", 1.0f);
     rate_values[RATE_REPAIRCOST]    = ConfigMgr::GetFloatDefault("Rate.RepairCost", 1.0f);
     if (rate_values[RATE_REPAIRCOST] < 0.0f)
@@ -504,9 +510,9 @@ void World::LoadConfigSettings(bool reload)
     rate_values[RATE_XP_QUEST_PREMIUM]   = ConfigMgr::GetFloatDefault("Rate.XP.Quest.Premium", 1.0f);
     rate_values[RATE_XP_EXPLORE_PREMIUM] = ConfigMgr::GetFloatDefault("Rate.XP.Explore.Premium", 1.0f);
     rate_values[RATE_REPUTATION_GAIN_PREMIUM]  = ConfigMgr::GetFloatDefault("Rate.Reputation.Gain.Premium", 1.0f);
-	rate_values[RATE_REPUTATION_GAIN_VIP]  = ConfigMgr::GetFloatDefault("Rate.Reputation.Gain.VIP", 1.0f);
+    rate_values[RATE_REPUTATION_GAIN_VIP]  = ConfigMgr::GetFloatDefault("Rate.Reputation.Gain.VIP", 1.0f);
     rate_values[RATE_HONOR_PREMIUM] = ConfigMgr::GetFloatDefault("Rate.Honor.Premium", 1.0f);
-	rate_values[RATE_HONOR_VIP] = ConfigMgr::GetFloatDefault("Rate.Honor.VIP", 1.0f);
+    rate_values[RATE_HONOR_VIP] = ConfigMgr::GetFloatDefault("Rate.Honor.VIP", 1.0f);
 
     rate_values[RATE_REPUTATION_GAIN]  = ConfigMgr::GetFloatDefault("Rate.Reputation.Gain", 1.0f);
     rate_values[RATE_REPUTATION_LOWLEVEL_KILL]  = ConfigMgr::GetFloatDefault("Rate.Reputation.LowLevel.Kill", 1.0f);
@@ -1205,6 +1211,9 @@ void World::LoadConfigSettings(bool reload)
         sLog->outInfo(LOG_FILTER_SERVER_LOADING, "Using DataDir %s", m_dataPath.c_str());
     }
 
+    m_bool_configs[CONFIG_ENABLE_MMAPS] = ConfigMgr::GetBoolDefault("mmap.enablePathFinding", false);
+    sLog->outInfo(LOG_FILTER_SERVER_LOADING, "WORLD: MMap data directory is: %smmaps", m_dataPath.c_str());
+
     m_bool_configs[CONFIG_VMAP_INDOOR_CHECK] = ConfigMgr::GetBoolDefault("vmap.enableIndoorCheck", 0);
     bool enableIndoor = ConfigMgr::GetBoolDefault("vmap.enableIndoorCheck", true);
     bool enableLOS = ConfigMgr::GetBoolDefault("vmap.enableLOS", true);
@@ -1342,7 +1351,7 @@ void World::LoadConfigSettings(bool reload)
     m_int_configs[CONFIG_ANTICHEAT_DETECTIONS_ENABLED] = ConfigMgr::GetIntDefault("Anticheat.DetectionsEnabled",31);
     m_int_configs[CONFIG_ANTICHEAT_MAX_REPORTS_FOR_DAILY_REPORT] = ConfigMgr::GetIntDefault("Anticheat.MaxReportsForDailyReport",70);
 
-    // Announce server for a ban    
+    // Announce server for a ban
     m_bool_configs[CONFIG_ANNOUNCE_BAN] = ConfigMgr::GetBoolDefault("AnnounceBan", false);
     m_bool_configs[CONFIG_ANNOUNCE_MUTE] = ConfigMgr::GetBoolDefault("AnnounceMute", false);
     m_bool_configs[CONFIG_SPELL_FORBIDDEN] = ConfigMgr::GetBoolDefault("SpellForbidden", false);
@@ -1381,6 +1390,16 @@ void World::SetInitialWorldSettings()
 
     ///- Initialize the random number generator
     srand((unsigned int)time(NULL));
+
+    ///- Initialize detour memory management
+    dtAllocSetCustom(dtCustomAlloc, dtCustomFree);
+
+    ///- Initialize VMapManager function pointers (to untangle game/collision circular deps)
+    if (VMAP::VMapManager2* vmmgr2 = dynamic_cast<VMAP::VMapManager2*>(VMAP::VMapFactory::createOrGetVMapManager()))
+    {
+        vmmgr2->GetLiquidFlagsPtr = &GetLiquidFlags;
+        vmmgr2->IsVMAPDisabledForPtr = &DisableMgr::IsVMAPDisabledFor;
+    }
 
     ///- Initialize config settings
     LoadConfigSettings();
@@ -1442,6 +1461,20 @@ void World::SetInitialWorldSettings()
     LoadDB2Stores(m_dataPath);
     DetectDBCLang();
     sLog->outInfo(LOG_FILTER_SERVER_LOADING, "");
+
+    std::unordered_map<uint32, std::vector<uint32>> mapData;
+    for (uint32 mapId = 0; mapId < sMapStore.GetNumRows(); mapId++)
+    {
+        if (MapEntry const* mapEntry = sMapStore.LookupEntry(mapId))
+        {
+            mapData.insert(std::unordered_map<uint32, std::vector<uint32>>::value_type(mapEntry->MapID, std::vector<uint32>()));
+            if (mapEntry->entrance_map != -1)
+                mapData[mapEntry->entrance_map].push_back(mapEntry->MapID);
+        }
+    }
+
+    MMAP::MMapManager* mmmgr = MMAP::MMapFactory::createOrGetMMapManager();
+    mmmgr->InitializeThreadUnsafe(mapData);
 
     sLog->outInfo(LOG_FILTER_SERVER_LOADING, "Loading SpellInfo store...");
     sSpellMgr->LoadSpellInfoStore();
@@ -2796,11 +2829,10 @@ BanReturn World::BanAccount(BanMode mode, std::string nameOrIP, std::string dura
                     uint32 timeRemaining = fieldsCheck[0].GetUInt32();
                     if (timeRemaining > duration_secs)
                     {
-                         return BAN_TOO_SMALL; 
+                         return BAN_TOO_SMALL;
                     }
                 }
 
-            
                 //Permanent ban
                 stmtt = LoginDatabase.GetPreparedStatement(LOGIN_SEL_ACCOUNT_BANNED);
                 stmtt->setUInt32(0, account);

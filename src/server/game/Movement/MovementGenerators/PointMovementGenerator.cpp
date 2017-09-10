@@ -33,6 +33,9 @@ void PointMovementGenerator<T>::DoInitialize(T* owner)
     if (!owner)
         return;
 
+    if (id == EVENT_CHARGE_PREPATH)
+        return;
+
     if (!owner->IsAlive())
         return;
 
@@ -43,9 +46,11 @@ void PointMovementGenerator<T>::DoInitialize(T* owner)
 
     i_recalculateSpeed = false;
     Movement::MoveSplineInit init(owner);
-    init.MoveTo(i_x, i_y, i_z);
+    init.MoveTo(i_x, i_y, i_z, m_generatePath);
     if (speed > 0.0f)
         init.SetVelocity(speed);
+    if (i_faceTarget)
+        init.SetFacing(i_faceTarget);
     init.Launch();
 }
 
@@ -81,12 +86,12 @@ bool PointMovementGenerator<T>::DoUpdate(T* owner, uint32 diff)
 
     owner->AddUnitState(UNIT_STATE_ROAMING_MOVE);
 
-    if (i_recalculateSpeed && !owner->movespline->Finalized())
+    if (id != EVENT_CHARGE_PREPATH && i_recalculateSpeed && !owner->movespline->Finalized())
     {
         i_recalculateSpeed = false;
 
         Movement::MoveSplineInit init(owner);
-        init.MoveTo(i_x, i_y, i_z);
+        init.MoveTo(i_x, i_y, i_z, m_generatePath);
         if (speed > 0.0f) // Default value for point motion type is 0.0f, if 0.0f -> spline will use GetSpeed() on owner.
             init.SetVelocity(speed);
         init.Launch();

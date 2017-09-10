@@ -353,7 +353,7 @@ bool Vehicle::AddPassenger(Unit* unit, int8 seatId)
 
     if (unit->GetVehicle() != this)
         return false;
-        
+
     if (unit->GetTypeId() == TYPEID_PLAYER && unit->GetMap()->IsBattleArena())
         return false;
 
@@ -437,7 +437,7 @@ bool Vehicle::AddPassenger(Unit* unit, int8 seatId)
                                                                  // also adds MOVEMENTFLAG_ROOT
         Movement::MoveSplineInit init(unit);
         init.DisableTransportPathTransformations();
-        init.MoveTo(unit->m_movementInfo.t_pos.m_positionX, unit->m_movementInfo.t_pos.m_positionY, unit->m_movementInfo.t_pos.m_positionZ);
+        init.MoveTo(unit->m_movementInfo.t_pos.m_positionX, unit->m_movementInfo.t_pos.m_positionY, unit->m_movementInfo.t_pos.m_positionZ, false);
         init.SetFacing(0.0f);
         init.SetTransportEnter();
         init.Launch();

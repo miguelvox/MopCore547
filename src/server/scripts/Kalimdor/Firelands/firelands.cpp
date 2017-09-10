@@ -23,7 +23,7 @@ enum Spells
     SPELL_FIERY_BLOOD                           = 99993,
     SPELL_SLIGHTLY_WARM_PINCERS                 = 99984,
 
-    // Fire Turtle Hatchling 
+    // Fire Turtle Hatchling
     SPELL_SHELL_SPIN                            = 100263,
 
     // Fire Archon
@@ -93,7 +93,7 @@ enum Spells
 };
 
 enum Adds
-{    
+{
     NPC_MAGMAKIN        = 54144,
     NPC_MAGMA_CONDUIT   = 54145, // 97699, 98250, 100746
 
@@ -204,7 +204,7 @@ class npc_firelands_ancient_core_hound : public CreatureScript
 
                 if (me->HasUnitState(UNIT_STATE_CASTING))
                     return;
-                
+
                 while (uint32 eventId = events.ExecuteEvent())
                 {
                     switch (eventId)
@@ -223,7 +223,7 @@ class npc_firelands_ancient_core_hound : public CreatureScript
                             break;
                     }
                 }
-                
+
                 DoMeleeAttackIfReady();
             }
         };
@@ -266,7 +266,7 @@ class npc_firelands_ancient_lava_dweller : public CreatureScript
 
                 if (me->HasUnitState(UNIT_STATE_CASTING))
                     return;
-                
+
                 while (uint32 eventId = events.ExecuteEvent())
                 {
                     switch (eventId)
@@ -277,7 +277,7 @@ class npc_firelands_ancient_lava_dweller : public CreatureScript
                             break;
                     }
                 }
-                
+
                 DoSpellAttackIfReady(SPELL_LAVA_SPIT);
             }
         };
@@ -355,7 +355,7 @@ class npc_firelands_fire_turtle_hatchling : public CreatureScript
 
                 if (me->HasUnitState(UNIT_STATE_CASTING))
                     return;
-                
+
                 while (uint32 eventId = events.ExecuteEvent())
                 {
                     switch (eventId)
@@ -366,7 +366,7 @@ class npc_firelands_fire_turtle_hatchling : public CreatureScript
                             break;
                     }
                 }
-                
+
                 DoMeleeAttackIfReady();
             }
         };
@@ -421,7 +421,7 @@ class npc_firelands_flame_archon : public CreatureScript
 
                 if (me->HasUnitState(UNIT_STATE_CASTING))
                     return;
-                
+
                 while (uint32 eventId = events.ExecuteEvent())
                 {
                     switch (eventId)
@@ -436,7 +436,7 @@ class npc_firelands_flame_archon : public CreatureScript
                             break;
                     }
                 }
-                
+
                 DoMeleeAttackIfReady();
             }
         };
@@ -472,7 +472,7 @@ class npc_firelands_molten_lord : public CreatureScript
 
             InstanceScript* pInstance;
             EventMap events;
-            
+
             void Reset()
             {
                 events.Reset();
@@ -527,7 +527,7 @@ class npc_firelands_molten_lord : public CreatureScript
 
                 if (me->HasUnitState(UNIT_STATE_CASTING))
                     return;
-                
+
                 while (uint32 eventId = events.ExecuteEvent())
                 {
                     switch (eventId)
@@ -546,7 +546,7 @@ class npc_firelands_molten_lord : public CreatureScript
                             break;
                     }
                 }
-                
+
                 DoMeleeAttackIfReady();
             }
         };
@@ -615,7 +615,7 @@ class npc_firelands_molten_flamefather : public CreatureScript
 
                 if (me->HasUnitState(UNIT_STATE_CASTING))
                     return;
-                
+
                 while (uint32 eventId = events.ExecuteEvent())
                 {
                     switch (eventId)
@@ -629,7 +629,7 @@ class npc_firelands_molten_flamefather : public CreatureScript
                             break;
                     }
                 }
-                
+
                 DoMeleeAttackIfReady();
             }
         };
@@ -713,7 +713,7 @@ class npc_firelands_magmakin : public CreatureScript
                 }
 
                 if (me->GetDistance(me->getVictim()) < 2.0f)
-                    DoCastAOE(SPELL_ERUPTION, true);                
+                    DoCastAOE(SPELL_ERUPTION, true);
             }
         };
 };
@@ -740,7 +740,7 @@ class spell_firelands_ancient_core_hound_dinner_time : public SpellScriptLoader
                 if (!GetTarget())
                     return;
 
-                GetTarget()->SetControlled(false, UNIT_STATE_STUNNED);                
+                GetTarget()->SetControlled(false, UNIT_STATE_STUNNED);
             }
 
             void Register()
@@ -778,7 +778,7 @@ class spell_firelands_ancient_core_hound_flame_breath : public SpellScriptLoader
                 if (!GetTarget())
                     return;
 
-                GetTarget()->SetControlled(false, UNIT_STATE_STUNNED);                
+                GetTarget()->SetControlled(false, UNIT_STATE_STUNNED);
             }
 
             void Register()
@@ -847,7 +847,7 @@ class spell_firelands_fire_turtle_hatchling_shell_spin : public SpellScriptLoade
                 if (!GetTarget())
                     return;
 
-                GetTarget()->SetControlled(false, UNIT_STATE_ROOT);                
+                GetTarget()->SetControlled(false, UNIT_STATE_ROOT);
             }
 
             void Register()
@@ -885,7 +885,7 @@ class spell_firelands_flame_archon_fiery_torment : public SpellScriptLoader
                 if (!GetTarget())
                     return;
 
-                GetTarget()->SetControlled(false, UNIT_STATE_STUNNED);                
+                GetTarget()->SetControlled(false, UNIT_STATE_STUNNED);
             }
 
             void PeriodicTick(constAuraEffectPtr aurEff)
@@ -1156,7 +1156,7 @@ class npc_blazing_monstrosity : public CreatureScript
                 // Hack to relocate vehicle on vehicle so exiting players are not moved under map
                 Movement::MoveSplineInit init(passenger);
                 init.DisableTransportPathTransformations();
-                init.MoveTo(0.6654003f, 0.0f, 1.9815f);
+                init.MoveTo(0.6654003f, 0.0f, 1.9815f, false);
                 init.SetFacing(0.0f);
                 init.Launch();
             }
@@ -1410,7 +1410,7 @@ class npc_firelands_circle_of_thorns_portal : public CreatureScript
             if (bIn)
                 pPlayer->NearTeleportTo(504.063416f, 476.256317f, 246.745483f, 2.30f, false);
             else
-                pPlayer->NearTeleportTo(173.153091f, 283.155334f, 84.603622f, 3.69f, false); 
+                pPlayer->NearTeleportTo(173.153091f, 283.155334f, 84.603622f, 3.69f, false);
 
             return true;
         }
@@ -1695,7 +1695,7 @@ class mob_fl_teleport : public CreatureScript
 {
     public:
      mob_fl_teleport() : CreatureScript("mob_fl_teleport") { }
- 
+
     CreatureAI* GetAI(Creature* creature) const
     {
         return new mob_fl_teleportAI (creature);
@@ -1712,7 +1712,7 @@ class mob_fl_teleport : public CreatureScript
 
             if (!who->ToPlayer())
                 return;
-            
+
             if (me->GetExactDist(who) <= 17.0f) // we use here not GetExactDist2d because player fly also into the FL portal
                 who->ToPlayer()->TeleportTo(720, -542.885f, 316.925f, 115.493f, 5.947003f);
         }

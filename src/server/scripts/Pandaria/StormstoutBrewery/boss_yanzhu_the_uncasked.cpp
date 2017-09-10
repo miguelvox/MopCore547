@@ -60,7 +60,7 @@ Outro
     Uncle Gao says: Look, "Chen Stormstout", we can't all be heroes, running from our responsibilities, tromping around the Dread Wastes, saving the world. Some of us are "Artists".
     Chen Stormstout says: I think the brewery might be on fire.
     * Although Chen points this out, Gao's tone is dismissive, even bored. *
-    Uncle Gao says: Yes, yes. That happens. 
+    Uncle Gao says: Yes, yes. That happens.
 
     Mastery stuff depends on npc's summoned in intro.
     Just a beer thought:
@@ -1050,7 +1050,7 @@ class boss_yan_zhu_the_uncasked : public CreatureScript
         void SudsMove(Creature* sudsWall, float X, float Y, float Z)
         {
             Movement::MoveSplineInit init(sudsWall);
-            init.MoveTo(X, Y, Z);
+            init.MoveTo(X, Y, Z, false);
             init.SetOrientationFixed(true);
             init.Launch();
         }

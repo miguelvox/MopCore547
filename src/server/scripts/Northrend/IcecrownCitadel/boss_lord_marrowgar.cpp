@@ -157,7 +157,7 @@ class boss_lord_marrowgar : public CreatureScript
 
                 BossAI::MoveInLineOfSight(who);
             }
-            
+
             void SpellHitTarget(Unit* target, SpellInfo const* spell)
             {
                 if (spell->Id == SPELL_BONE_SLICE)
@@ -228,7 +228,7 @@ class boss_lord_marrowgar : public CreatureScript
                             if (unit)
                                 if (unit->isPet() || unit->isTotem() || !me->IsWithinLOSInMap(unit))
                                     unit = SelectTarget(SELECT_TARGET_RANDOM, 1);
-                                else 
+                                else
                                     me->GetMotionMaster()->MovePoint(POINT_TARGET_BONESTORM_PLAYER, unit->GetPositionX(), unit->GetPositionY(), unit->GetPositionZ());
                             break;
                         }
@@ -428,7 +428,7 @@ class npc_bone_spike : public CreatureScript
                 /// This fixes healing spiked people
                 Movement::MoveSplineInit init(passenger);
                 init.DisableTransportPathTransformations();
-                init.MoveTo(-0.02206125f, -0.02132235f, 5.514783f);
+                init.MoveTo(-0.02206125f, -0.02132235f, 5.514783f, false);
                 init.Launch();
 
                 /// @WORKAROUND - Clear ON VEHICLE state to allow healing (Invalid target errors)

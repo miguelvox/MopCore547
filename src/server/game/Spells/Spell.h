@@ -104,29 +104,29 @@ struct SpellLogHelper
     std::list<ObjectGuid> Targets; // Guid3
     std::list<SpellLog_EnergyzeHelper> Energizes; // Guid4
     std::list<uint32> CreatedItems;
-    
+
     SpellLogHelper()
     {
         Targets.clear();
         Energizes.clear();
         CreatedItems.clear();
     }
-    
+
     void AddTarget(ObjectGuid guid)
     {
         Targets.push_back(guid);
     }
-    
+
     void AddCreatedItem(uint32 id)
     {
         CreatedItems.push_back(id);
     }
-    
+
     void AddEnergize(SpellLog_EnergyzeHelper energize)
     {
         Energizes.push_back(energize);
     }
-    
+
     void AddEnergize(ObjectGuid guid, float mult, uint32 val, uint8 type)
     {
         SpellLog_EnergyzeHelper helper;
@@ -134,7 +134,7 @@ struct SpellLogHelper
         helper.PowerType = type;
         helper.Guid = guid;
         helper.Multiplier = mult;
-        
+
         AddEnergize(helper);
     }
 };
@@ -775,6 +775,7 @@ class Spell
 
         bool m_skipCheck;
         uint32 m_auraScaleMask;
+        std::unique_ptr<PathGenerator> m_preGeneratedPath;
 
         typedef std::map<uint32, SpellLogHelper> LogHelperMap;
         LogHelperMap m_effectExecuteData;

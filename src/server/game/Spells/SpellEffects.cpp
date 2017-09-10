@@ -68,6 +68,7 @@
 #include "GuildMgr.h"
 #include "Group.h"
 #include "UpdateFieldFlags.h"
+#include "PathGenerator.h"
 
 pEffect SpellEffects[TOTAL_SPELL_EFFECTS] =
 {
@@ -1886,7 +1887,7 @@ void Spell::EffectJumpDest(SpellEffIndex effIndex)
 
       switch (m_spellInfo->Id)
       {
-      case 49575: // Death Grip 
+      case 49575: // Death Grip
       case 92832: // Leap of Faith
             m_caster->GetMotionMaster()->CustomJump(x, y, z, speedXY, speedZ);
             break;
@@ -2826,7 +2827,7 @@ void Spell::EffectCreateItem2(SpellEffIndex effIndex)
       {
       case 52309: new_id = 52314; break; // Nightstone Choker
       case 52308: new_id = 52316; break; // Hessonite Band
-      case 52307: new_id = 52312; break; // Alicite Pendant  
+      case 52307: new_id = 52312; break; // Alicite Pendant
       case 52306: new_id = 52310; break; // Jasper Ring
       default: break;
       }
@@ -3459,7 +3460,7 @@ void Spell::EffectEnergize(SpellEffIndex effIndex)
       case 99069: // Fires of Heaven, Item - Paladin T12 Holy 2P Bonus
       case 99007: // Heartfire, Item - Druid T12 Restoration 2P Bonus
       case 99131: // Divine Fire, Item - Mage T12 2P Bonus
-      case 99189: // Flametide, Item - Shaman T12 Restoration 2P Bonus 
+      case 99189: // Flametide, Item - Shaman T12 Restoration 2P Bonus
             damage = int32(CalculatePct(unitTarget->GetCreateMana(), damage));
             break;
       case 35395: // Crusader Strike
@@ -5494,7 +5495,7 @@ void Spell::EffectWeaponDmg(SpellEffIndex effIndex)
 
       m_damage += unitTarget->MeleeDamageBonusTaken(m_caster, damage, m_attackType, m_spellInfo);
 
-      // Legion Strike and Mortal Cleave 
+      // Legion Strike and Mortal Cleave
       if (m_spellInfo->Id == 30213 || m_spellInfo->Id == 115625)
       {
             uint32 count = 0;
@@ -7451,39 +7452,39 @@ void Spell::EffectSkinning(SpellEffIndex /*effIndex*/)
       m_caster->ToPlayer()->UpdateGatherSkill(skill, skillValue, reqValue, creature->isElite() ? 2 : 1);
 }
 
-void Spell::EffectCharge(SpellEffIndex /*effIndex*/)
+void Spell::EffectCharge(SpellEffIndex effIndex)
 {
-      if (!unitTarget)
-            return;
+    if (!unitTarget)
+        return;
 
-      if (effectHandleMode == SPELL_EFFECT_HANDLE_LAUNCH_TARGET)
-      {
-            float angle = unitTarget->GetRelativeAngle(m_caster);
+    if (effectHandleMode == SPELL_EFFECT_HANDLE_LAUNCH_TARGET)
+    {
+        float speed = G3D::fuzzyGt(m_spellInfo->Speed, 0.0f) ? m_spellInfo->Speed : SPEED_CHARGE;
+        // Spell is not using explicit target - no generated path
+        if (m_preGeneratedPath->GetPathType() == PATHFIND_BLANK)
+        {
             Position pos;
-
             unitTarget->GetContactPoint(m_caster, pos.m_positionX, pos.m_positionY, pos.m_positionZ);
-            unitTarget->GetFirstCollisionPosition(pos, unitTarget->GetObjectSize(), angle);
+            unitTarget->GetFirstCollisionPosition(pos, unitTarget->GetObjectSize(), unitTarget->GetRelativeAngle(m_caster));
+            m_caster->GetMotionMaster()->MoveCharge(pos.m_positionX, pos.m_positionY, pos.m_positionZ, speed, EVENT_CHARGE, false, unitTarget);
+        }
+        else
+            m_caster->GetMotionMaster()->MoveCharge(*m_preGeneratedPath, speed, unitTarget);
+    }
 
-            m_caster->GetMotionMaster()->MoveCharge(pos.m_positionX, pos.m_positionY, pos.m_positionZ + unitTarget->GetObjectSize());
+    if (effectHandleMode == SPELL_EFFECT_HANDLE_HIT_TARGET)
+    {
+        // not all charge effects used in negative spells
+        if (!m_spellInfo->IsPositive() && m_caster->GetTypeId() == TYPEID_PLAYER)
+            m_caster->Attack(unitTarget, true);
 
-            if (m_caster->GetTypeId() == TYPEID_PLAYER)
-                  m_caster->ToPlayer()->SetFallInformation(0, m_caster->GetPositionZ());
-      }
+        uint32 triggerSpell = m_spellInfo->Effects[effIndex].TriggerSpell;
+        if (triggerSpell > 0)
+            m_caster->CastSpell(unitTarget, triggerSpell, true, nullptr, nullptr, m_originalCasterGUID);
+    }
 
-      if (effectHandleMode == SPELL_EFFECT_HANDLE_HIT_TARGET)
-      {
-            // not all charge effects used in negative spells
-            if (m_caster->GetTypeId() == TYPEID_PLAYER)
-            {
-                  m_caster->ToPlayer()->SetFallInformation(0, m_caster->GetPositionZ());
-
-                  if (!m_spellInfo->IsPositive())
-                        m_caster->Attack(unitTarget, true);
-            }
-      }
-
-      if (m_caster->GetTypeId() == TYPEID_PLAYER)
-            m_caster->ToPlayer()->SetFallInformation(0, unitTarget->GetPositionZ());
+    if (m_caster->GetTypeId() == TYPEID_PLAYER)
+        m_caster->ToPlayer()->SetFallInformation(0, unitTarget->GetPositionZ());
 }
 
 void Spell::EffectChargeDest(SpellEffIndex /*effIndex*/)

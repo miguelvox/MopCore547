@@ -4101,7 +4101,8 @@ enum EventId
 {
     EVENT_SPELLCLICK        = 1001,
     EVENT_CHARGE            = 1003,
-    EVENT_JUMP              = 1004
+    EVENT_JUMP              = 1004,
+    EVENT_CHARGE_PREPATH    = 1005
 };
 
 enum ResponseCodes
@@ -4392,7 +4393,7 @@ enum TradeStatus
     TRADE_STATUS_IGNORE_YOU = 28,
     TRADE_STATUS_TRIAL_ACCOUNT = 29,
     TRADE_STATUS_TARGET_STUNNED = 30,
-    
+
     TRADE_STATUS_CURRENCY = 0,
     TRADE_STATUS_BACK_TO_TRADE = 14,
 

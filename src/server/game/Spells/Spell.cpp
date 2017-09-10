@@ -27,6 +27,7 @@
 #include "UpdateMask.h"
 #include "World.h"
 #include "ObjectMgr.h"
+#include "PathGenerator.h"
 #include "SpellMgr.h"
 #include "Player.h"
 #include "Pet.h"
@@ -1002,7 +1003,7 @@ void Spell::SelectImplicitChannelTargets(SpellEffIndex effIndex, SpellImplicitTa
     Spell* channeledSpell = m_originalCaster->GetCurrentSpell(CURRENT_CHANNELED_SPELL);
     if (!channeledSpell)
         return;
-    
+
     switch (targetType.GetTarget())
     {
         case TARGET_UNIT_CHANNEL_TARGET:
@@ -1517,7 +1518,7 @@ void Spell::SelectImplicitAreaTargets(SpellEffIndex effIndex, SpellImplicitTarge
                 break;
             }
             case SPELLFAMILY_DRUID:
-                switch(m_spellInfo->Id) 
+                switch(m_spellInfo->Id)
                 {
                     // Firebloom, Item  Druid T12 Restoration 4P Bonus
                     case 99017:
@@ -1529,7 +1530,7 @@ void Spell::SelectImplicitAreaTargets(SpellEffIndex effIndex, SpellImplicitTarge
                         maxSize = m_caster->HasAura(138284) ? 4 : 3; // Item - Druid T15 Restoration 2P Bonus
                         power = POWER_HEALTH;
                         break;
-                    // Tranquility 
+                    // Tranquility
                     case 44203:
                         maxSize = 5;
                         power = POWER_HEALTH;
@@ -1592,7 +1593,7 @@ void Spell::SelectImplicitAreaTargets(SpellEffIndex effIndex, SpellImplicitTarge
             if ((m_spellInfo->Id == 148187 || m_spellInfo->Id == 107270 || m_spellInfo->Id == 117640 || m_spellInfo->Id == 116847) && unitTargets.size() >= 3 && !m_caster->ToPlayer()->HasSpellCooldown(129881))
             {
                 m_caster->CastSpell(m_caster, 129881, true);
-                
+
                 // Rushing Jade Wind lasts 6 sec, so cd - 6 sec
                 if (m_spellInfo->Id == 148187)
                     m_caster->ToPlayer()->AddSpellCooldown(129881, 0, time(NULL) + 6);
@@ -2516,7 +2517,7 @@ void Spell::AddUnitTarget(Unit* target, uint32 effectMask, bool checkIfValid /*=
             m_caster->ProcDamageAndSpell(target, PROC_FLAG_NONE, PROC_FLAG_TAKEN_SPELL_MAGIC_DMG_CLASS_NEG, PROC_EX_REFLECT, 1, 0, BASE_ATTACK, m_spellInfo);
             if (m_spellInfo->Id == 2136) // hack to trigger impact in reflect
             {
-                m_caster->ProcDamageAndSpell(m_caster, PROC_FLAG_DONE_SPELL_MAGIC_DMG_CLASS_NEG, 
+                m_caster->ProcDamageAndSpell(m_caster, PROC_FLAG_DONE_SPELL_MAGIC_DMG_CLASS_NEG,
                     PROC_FLAG_TAKEN_SPELL_MAGIC_DMG_CLASS_NEG, PROC_EX_NORMAL_HIT, 1, 0, BASE_ATTACK, m_spellInfo);
             }
         }
@@ -3500,7 +3501,7 @@ void Spell::prepare(SpellCastTargets const* targets, constAuraEffectPtr triggere
         m_casttime = 0;
 
     if (m_caster->GetTypeId() == TYPEID_PLAYER)
-    { 
+    {
         m_caster->ToPlayer()->SetSpellModTakingSpell(this, false);
 
         // Set cast time to 0 if .cheat cast time is enabled.
@@ -3847,7 +3848,7 @@ void Spell::cast(bool skipCheck)
     }
 
     if (m_caster->GetTypeId() == TYPEID_PLAYER)
-    { 
+    {
         m_caster->ToPlayer()->SetSpellModTakingSpell(this, false);
         //Clear spell cooldowns after every spell is cast if .cheat cooldown is enabled.
         if (m_caster->ToPlayer()->GetCommandStatus(CHEAT_COOLDOWN))
@@ -4300,7 +4301,7 @@ void Spell::finish(bool ok)
     // Stop Attack for some spells
     if (m_spellInfo->Attributes & SPELL_ATTR0_STOP_ATTACK_TARGET)
         m_caster->AttackStop();
-    
+
     if (m_castItemGUID && m_caster->GetTypeId() == TYPEID_PLAYER)
         if (Item* item = m_caster->ToPlayer()->GetItemByGuid(m_castItemGUID))
             if (item->IsEquipable() && !item->IsEquipped())
@@ -5657,7 +5658,7 @@ void Spell::WriteSpellGoTargets(WorldPacket* data)
     for (std::list<TargetInfo>::iterator ihit = m_UniqueTargetInfo.begin(); ihit != m_UniqueTargetInfo.end(); ++ihit)
     {
         if ((*ihit).effectMask == 0)                  // No effect apply - all immuned add state
-        
+
             // possibly SPELL_MISS_IMMUNE2 for this??
             ihit->missCondition = SPELL_MISS_IMMUNE2;
     }
@@ -5683,7 +5684,7 @@ void Spell::WriteSpellGoTargets(WorldPacket* data)
     }
 
     for (std::list<GOTargetInfo>::const_iterator ighit = m_UniqueGOTargetInfo.begin(); ighit != m_UniqueGOTargetInfo.end() && hit <= 255; ++ighit)
-    { 
+    {
         *data << uint64(ighit->targetGUID);                 // Always hits
         ++hit;
     }
@@ -6102,20 +6103,20 @@ void Spell::SendResurrectRequest(Player* target)
     data.WriteBit(false);
     data.WriteBits(strlen(resurrectorName), 6);
     data.WriteBit(guid[4]);
-    
+
     data.WriteByteSeq(guid[4]);
     data.WriteString(resurrectorName);
     data.WriteByteSeq(guid[3]);
     data.WriteByteSeq(guid[7]);
     data << uint32(m_spellInfo->Id);
-    data.WriteByteSeq(guid[0]);    
+    data.WriteByteSeq(guid[0]);
     data.WriteByteSeq(guid[5]);
     data.WriteByteSeq(guid[6]);
     data.WriteByteSeq(guid[1]);
     data << uint32(0);
     data.WriteByteSeq(guid[2]);
     data << uint32(0);
-    
+
     target->GetSession()->SendPacket(&data);
 }
 
@@ -6805,7 +6806,7 @@ SpellCastResult Spell::CheckCast(bool strict)
 
     // Check vehicle flags
     if (!(_triggeredCastFlags & TRIGGERED_IGNORE_CASTER_MOUNTED_OR_ON_VEHICLE))
-    { 
+    {
         SpellCastResult vehicleCheck = m_spellInfo->CheckVehicle(m_caster);
         if (vehicleCheck != SPELL_CAST_OK)
             return vehicleCheck;
@@ -7138,9 +7139,39 @@ SpellCastResult Spell::CheckCast(bool strict)
                 if (m_caster->HasUnitState(UNIT_STATE_ROOT))
                     return SPELL_FAILED_ROOTED;
                 if (m_caster->GetTypeId() == TYPEID_PLAYER)
+                {
                     if (Unit* target = m_targets.GetUnitTarget())
+                    {
                         if (!target->IsAlive())
                             return SPELL_FAILED_BAD_TARGETS;
+
+                        float objSize = target->GetObjectSize();
+                        float range = m_spellInfo->GetMaxRange(true, m_caster, this) * 1.5f + objSize; // can't be overly strict
+
+                        m_preGeneratedPath = std::unique_ptr<PathGenerator>(new PathGenerator(m_caster)); // MoPCore::make_unique<PathGenerator>(m_caster);
+                        m_preGeneratedPath->SetPathLengthLimit(range);
+                        // first try with raycast, if it fails fall back to normal path
+                        float targetObjectSize = std::min(target->GetObjectSize(), 4.0f);
+                        bool result = m_preGeneratedPath->CalculatePath(target->GetPositionX(), target->GetPositionY(), target->GetPositionZ() + targetObjectSize, false, true);
+                        if (m_preGeneratedPath->GetPathType() & PATHFIND_SHORT)
+                            return SPELL_FAILED_OUT_OF_RANGE;
+                        else if (!result || m_preGeneratedPath->GetPathType() & (PATHFIND_NOPATH | PATHFIND_INCOMPLETE))
+                        {
+                            result = m_preGeneratedPath->CalculatePath(target->GetPositionX(), target->GetPositionY(), target->GetPositionZ() + targetObjectSize, false, false);
+                            if (m_preGeneratedPath->GetPathType() & PATHFIND_SHORT)
+                                return SPELL_FAILED_OUT_OF_RANGE;
+                            else if (!result || m_preGeneratedPath->GetPathType() & (PATHFIND_NOPATH | PATHFIND_INCOMPLETE))
+                                return SPELL_FAILED_NOPATH;
+                            else if (m_preGeneratedPath->IsInvalidDestinationZ(target)) // Check position z, if not in a straight line
+                                return SPELL_FAILED_NOPATH;
+                        }
+                        else if (m_preGeneratedPath->IsInvalidDestinationZ(target)) // Check position z, if in a straight line
+                            return SPELL_FAILED_NOPATH;
+
+                        m_preGeneratedPath->ReducePathLenghtByDist(objSize); // move back
+                    }
+                }
+
                 break;
             }
             case SPELL_EFFECT_SKINNING:
@@ -7419,7 +7450,7 @@ SpellCastResult Spell::CheckCast(bool strict)
                 {
                     if (m_caster->GetTypeId() != TYPEID_PLAYER)
                         return SPELL_FAILED_CASTER_AURASTATE;
-                    
+
                     Pet* pet = m_caster->ToPlayer()->GetPet();
                     if (!pet)
                         return SPELL_FAILED_CASTER_AURASTATE;
@@ -7569,7 +7600,7 @@ SpellCastResult Spell::CheckCast(bool strict)
     switch(m_spellInfo->Id)
     {
         case 50334: // Berserk
-        case 61336: // Survival Instincts 
+        case 61336: // Survival Instincts
         {
             if (m_caster->GetTypeId() != TYPEID_PLAYER || !m_caster->ToPlayer()->IsInFeralForm())
                 return SPELL_FAILED_ONLY_SHAPESHIFT;
@@ -7737,7 +7768,7 @@ SpellCastResult Spell::CheckCasterAuras() const
                     // Sap & Hand of Freedom hack
                     if ((*i)->GetSpellInfo()->Id == 6770 && m_spellInfo->Id == 1044)
                         continue;
-                    
+
                     // Freezing trap hack
                     if ((*i)->GetSpellInfo()->Id == 3355 && (m_spellInfo->Id == 33206 || m_spellInfo->Id == 47788))
                         continue;
@@ -8283,7 +8314,7 @@ SpellCastResult Spell::CheckItems()
                                 for (uint32 socket = 0; socket < MAX_ITEM_PROTO_SOCKETS; ++socket)
                                     if (targetItem->GetTemplate()->Socket[socket].Color)
                                         ++numSockets;
-                
+
                                 if (numSockets == MAX_ITEM_PROTO_SOCKETS || targetItem->GetEnchantmentId(PRISMATIC_ENCHANTMENT_SLOT))
                                     return SPELL_FAILED_MAX_SOCKETS;
                                 break;
@@ -8719,12 +8750,12 @@ bool Spell::CheckEffectTarget(Unit const* target, uint32 eff) const
                 return true;
             if (LOSAdditionalRules(target))
                 return true;
- 
+
             if (m_targets.HasDst())
             {
                 float x, y, z;
                 m_targets.GetDstPos()->GetPosition(x, y, z);
-                
+
                 if (!target->IsWithinLOS(x, y, z))
                     return false;
             }
@@ -9738,7 +9769,7 @@ bool WorldObjectSpellTargetCheck::operator()(WorldObject* target)
             case TARGET_CHECK_ENTRY:
                 // Smoke Bomb has entry target type
                 // but cannot hit untargetable/unselectable units
-                if (_spellInfo->Id == 88611) 
+                if (_spellInfo->Id == 88611)
                     if (unitTarget->HasFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE | UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_IMMUNE_TO_PC))
                         return false;
                 break;

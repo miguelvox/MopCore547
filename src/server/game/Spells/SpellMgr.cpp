@@ -1889,22 +1889,22 @@ void SpellMgr::LoadSpellTargetPositions()
     // Check all spells
     for (uint32 i = 1; i < GetSpellInfoStoreSize(); ++i)
     {
-    SpellInfo const* spellInfo = GetSpellInfo(i);
-    if (!spellInfo)
-    continue;
+        SpellInfo const* spellInfo = GetSpellInfo(i);
+        if (!spellInfo)
+            continue;
 
-    for (uint8 j = 0; j < MAX_SPELL_EFFECTS; ++j)
-    {
-    SpellEffectInfo const* effect = spellInfo->GetEffect(j);
-    if (!effect)
-    continue;
+        for (uint8 j = 0; j < MAX_SPELL_EFFECTS; ++j)
+        {
+            SpellEffectInfo const* effect = spellInfo->GetEffect(j);
+            if (!effect)
+                continue;
 
-    if (effect->TargetA.GetTarget() != TARGET_DEST_DB && effect->TargetB.GetTarget() != TARGET_DEST_DB)
-    continue;
+            if (effect->TargetA.GetTarget() != TARGET_DEST_DB && effect->TargetB.GetTarget() != TARGET_DEST_DB)
+                continue;
 
-    if (!GetSpellTargetPosition(i, SpellEffIndex(j)))
-    TC_LOG_DEBUG("spells", "Spell (Id: %u, EffectIndex: %u) does not have record in `spell_target_position`.", i, j);
-    }
+            if (!GetSpellTargetPosition(i, SpellEffIndex(j)))
+                sLog->outDebug(LOG_FILTER_SPELLS_AURAS, "Spell (Id: %u, EffectIndex: %u) does not have record in `spell_target_position`.", i, j);
+        }
     }
     */
 

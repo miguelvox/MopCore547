@@ -22,6 +22,7 @@
 #include "GridNotifiers.h"
 #include "Group.h"
 #include "InstanceSaveMgr.h"
+//#include "MMapFactory.h"
 #include "MovementGenerator.h"
 #include "ObjectAccessor.h"
 #include "SpellAuras.h"
@@ -223,6 +224,7 @@ public:
 
         uint32 haveMap = Map::ExistMap(object->GetMapId(), gridX, gridY) ? 1 : 0;
         uint32 haveVMap = Map::ExistVMap(object->GetMapId(), gridX, gridY) ? 1 : 0;
+        //uint32 haveMMap = (DisableMgr::IsPathfindingEnabled(mapId) && MMAP::MMapFactory::createOrGetMMapManager()->GetNavMesh(handler->GetSession()->GetPlayer()->GetMapId())) ? 1 : 0;
 
         if (haveVMap)
         {
@@ -242,6 +244,8 @@ public:
             object->GetPositionX(), object->GetPositionY(), object->GetPositionZ(), object->GetOrientation(),
             cell.GridX(), cell.GridY(), cell.CellX(), cell.CellY(), object->GetInstanceId(),
             zoneX, zoneY, groundZ, floorZ, haveMap, haveVMap);
+
+        //handler->PSendSysMessage("MMaps: %s", haveMMap);
 
         LiquidData liquidStatus;
         ZLiquidStatus status = map->getLiquidStatus(object->GetPositionX(), object->GetPositionY(), object->GetPositionZ(), MAP_ALL_LIQUIDS, &liquidStatus);
@@ -2131,8 +2135,6 @@ public:
 
     static bool HandleSendLootRollCommand(ChatHandler* handler, char const* args)
     {
-        
-        
         Item* item = handler->GetSession()->GetPlayer()->GetItemByPos(INVENTORY_SLOT_BAG_0, EQUIPMENT_SLOT_MAINHAND);
         if (!item)
             return false;
@@ -2145,7 +2147,7 @@ public:
 
         WorldPacket data(SMSG_LOOT_ALL_PASSED, (8 + 4 + 8 + 4 + 4 + 4 + 1 + 1 + 1));
         ObjectGuid target = item->GetGUID();
-        
+
         data.WriteBit(target[2]);
         data.WriteBit(target[7]);
         data.WriteBit(!false);
@@ -3022,7 +3024,7 @@ public:
         }
 
         WorldPacket data(SMSG_PLAY_SOUND, 4);
-        
+
         ObjectGuid guid = handler->GetSession()->GetPlayer()->GetGUID();
 
         uint8 bitsOrder[8] = { 1, 6, 7, 5, 4, 3, 0, 2 };

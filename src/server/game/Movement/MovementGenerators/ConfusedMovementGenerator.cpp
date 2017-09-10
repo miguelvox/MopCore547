@@ -19,6 +19,7 @@
 #include "Creature.h"
 #include "MapManager.h"
 #include "ConfusedMovementGenerator.h"
+#include "PathGenerator.h"
 #include "VMapFactory.h"
 #include "MoveSplineInit.h"
 #include "MoveSpline.h"
@@ -173,8 +174,17 @@ bool ConfusedMovementGenerator<T>::DoUpdate(T* owner, uint32 diff)
             float y = i_waypoints[i_nextMove][1];
             float z = i_waypoints[i_nextMove][2];
 
+            PathGenerator path(owner);
+            path.SetPathLengthLimit(30.0f);
+            bool result = path.CalculatePath(x, y, z);
+            if (!result || (path.GetPathType() & PATHFIND_NOPATH))
+            {
+                i_nextMoveTime.Reset(100);
+                return true;
+            }
+
             Movement::MoveSplineInit init(owner);
-            init.MoveTo(x, y, z);
+            init.MovebyPath(path.GetPath());
             init.SetWalk(true);
             init.Launch();
         }
