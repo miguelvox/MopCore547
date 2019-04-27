@@ -1,4 +1,4 @@
-![mistsofpandarialogo](https://cdn1.savepice.ru/uploads/2019/4/27/f3cbf116161d3e7ffd98c7cd1f217b34-full.png)
+![mistsofpandarialogo](https://cdn1.savepice.ru/uploads/2019/4/27/5a9ac9d776be3535e8d1b7c3e8d1914b-full.png)
 
 
  INSTRUCTIONS:
