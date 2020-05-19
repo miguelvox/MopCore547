@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012 - 2016 MoPCore
+ * Copyright (C) 2012 - 2016 WoWSource
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the
@@ -649,7 +649,7 @@ class spell_mogu_petrification : public SpellScriptLoader
         }
 };
 
-#define GOSSIP_CHOICE_1 "What are you waiting for ? Let's go investigate !"
+#define GOSSIP_CHOICE_1 "Que estas esperando ? Vamos a investigar!"
 #define GOSSIP_CHOICE_2 "Go ahead and turn this thing on."
 
 enum eChoTexts
@@ -889,14 +889,14 @@ class npc_lorewalker_cho : public CreatureScript
                             }
                         }
 
-                        if (Creature* qiang = GetClosestCreatureWithEntry(me, MOB_QIANG, 200.0f))
+                      /*  if (Creature* qiang = GetClosestCreatureWithEntry(me, MOB_QIANG, 200.0f))
                         {
                             if (qiang->AI())
                             {
                                 qiang->AI()->DoAction(ACTION_SET_GHOST_VISUAL);
                                 qiang->AI()->DoAction(ACTION_SET_NATIVE_DISPLAYID);
                             }
-                        }
+                        }*/
 
                         if (Creature* subetai = GetClosestCreatureWithEntry(me, MOB_SUBETAI, 200.0f))
                         {
@@ -1147,8 +1147,8 @@ class mob_zian : public CreatureScript
 
             void Reset()
             {
-                me->SetDisplayId(11686);
-                me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
+                //me->SetDisplayId(11686);
+                //me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
 
                 events.Reset();
                 events.ScheduleEvent(EVENT_ZIAN_CHARGED_SHADOWS, urand(5000, 15000));
@@ -1227,8 +1227,8 @@ class mob_sorcerer_mogu : public CreatureScript
             {
                 allKilled = false;
 
-                me->SetDisplayId(11686);
-                me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
+                //me->SetDisplayId(11686);
+               // me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
 
                 events.Reset();
                 events.ScheduleEvent(EVENT_SORCERER_SHADOW_BLAST, 5000);
@@ -1303,8 +1303,8 @@ class mob_qiang : public CreatureScript
 
             void Reset()
             {
-                me->SetDisplayId(11686);
-                me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
+               // me->SetDisplayId(11686);
+               // me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
 
                 events.Reset();
                 events.ScheduleEvent(EVENT_QIANG_ANNIHILATE, urand(5000, 15000));
@@ -1329,7 +1329,7 @@ class mob_qiang : public CreatureScript
                         me->setFaction(14);
                         break;
                     case ACTION_END_SECOND_COMBAT:
-                        me->DespawnOrUnsummon();
+                        me->DespawnOrUnsummon(); //revisar esto
                         break;
                     default:
                         break;
@@ -1416,8 +1416,8 @@ class mob_mounted_mogu : public CreatureScript
 
             void Reset()
             {
-                me->SetDisplayId(11686);
-                me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
+                //me->SetDisplayId(11686);
+               // me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
 
                 events.Reset();
                 events.ScheduleEvent(EVENT_MOUNTED_MOGU_CRUSHING_ATTACKS, urand(5000, 12000));
@@ -1444,7 +1444,7 @@ class mob_mounted_mogu : public CreatureScript
                         me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
                         break;
                    case ACTION_END_SECOND_COMBAT:
-                       me->DespawnOrUnsummon();
+                       me->DespawnOrUnsummon(); //revisar esto
                        break;
                     default:
                         break;
@@ -1500,8 +1500,8 @@ class mob_subetai : public CreatureScript
 
             void Reset()
             {
-                me->SetDisplayId(11686);
-                me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
+                //me->SetDisplayId(11686);
+                //me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
 
                 events.Reset();
                 events.ScheduleEvent(EVENT_SUBETAI_VOLLEY, urand(5000, 15000));
@@ -1613,8 +1613,8 @@ class mob_mogu_archer : public CreatureScript
 
             void Reset()
             {
-                me->SetDisplayId(11686);
-                me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
+                //me->SetDisplayId(11686);
+                //me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
 
                 events.Reset();
                 events.ScheduleEvent(EVENT_MOGU_ARCHER_SHOOT, urand(5000, 12000));
@@ -1695,8 +1695,8 @@ class mob_meng : public CreatureScript
 
             void Reset()
             {
-                me->SetDisplayId(11686);
-                me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
+               // me->SetDisplayId(11686);
+               // me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
 
                 events.Reset();
             }
@@ -1814,8 +1814,8 @@ class mob_kingsguard : public CreatureScript
 
             void Reset()
             {
-                me->SetDisplayId(11686);
-                me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
+                //me->SetDisplayId(11686);
+                //me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
 
                 events.Reset();
                 events.ScheduleEvent(EVENT_KINGS_GUARD_ENRAGE, urand(5000, 12000));

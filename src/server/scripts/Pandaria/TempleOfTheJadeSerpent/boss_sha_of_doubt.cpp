@@ -115,7 +115,7 @@ class boss_sha_of_doubt : public CreatureScript
                 Talk(TALK_AGGRO);
                 events.ScheduleEvent(EVENT_WITHER_WILL, 5000);
                 events.ScheduleEvent(EVENT_TOUCH_OF_NOTHINGNESS, 500);
-                events.ScheduleEvent(EVENT_BOUNDS_OF_REALITY, 3000);
+                //events.ScheduleEvent(EVENT_BOUNDS_OF_REALITY, 3000);
             }
 
             void UpdateAI(const uint32 diff)

@@ -41,6 +41,7 @@ if(SCRIPTS)
   include(Maelstrom/CMakeLists.txt)
   include(Outland/CMakeLists.txt)
   include(Northrend/CMakeLists.txt)
+  #include(Scenarios/CMakeLists.txt)
   include(Pandaria/CMakeLists.txt)
 endif()
 

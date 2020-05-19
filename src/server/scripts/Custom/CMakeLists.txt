@@ -11,8 +11,12 @@
 set(scripts_STAT_SRCS
   ${scripts_STAT_SRCS}
     Custom/event_april.cpp
-    Custom/duel_reset.cpp
-    Custom/arena_fast_start.cpp
+	Custom/script_store.cpp
+    Custom/PVP/duel_reset.cpp
+    Custom/PVP/arena_fast_start.cpp
+    Custom/Tools/npc_promo.cpp
+	Custom/Tools/teleguy.cpp
+	Custom/Tools/petguy.cpp
 )
 
 message("  -> Prepared: Custom")

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012 - 2016 MoPCore
+ * Copyright (C) 2012 - 2016 WoWSource
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the
@@ -69,9 +69,9 @@ enum Data64
 enum StoneGuard
 {
     AMETHYST_GUARDIAN                       = 0,
-    COBALT_GUARDIAN,
-    JADE_GUARDIAN,
-    JASPER_GUARDIAN
+    COBALT_GUARDIAN                         = 1,
+    JADE_GUARDIAN                           = 2,
+	JASPER_GUARDIAN                         = 3
 };
 
 #define MAX_STONE_GUARD 4

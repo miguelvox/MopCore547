@@ -22,6 +22,7 @@
 #include "GridNotifiers.h"
 #include "mogu_shan_vaults.h"
 
+
 enum eSpells
 {
     // Jasper
@@ -90,10 +91,10 @@ enum eEvents
 
 uint32 guardiansEntry[4] =
 {
+	NPC_COBALT,
     NPC_JASPER,
     NPC_JADE,
-    NPC_AMETHYST,
-    NPC_COBALT
+    NPC_AMETHYST
 };
 
 // For living crystals - Stone guard
@@ -163,9 +164,9 @@ class boss_stone_guard_controler : public CreatureScript
                                 if (guardian->IsAlive())
                                     pInstance->SendEncounterUnit(ENCOUNTER_FRAME_ENGAGE, guardian);
 
-                        events.ScheduleEvent(EVENT_PETRIFICATION, 15000);
+                        events.ScheduleEvent(EVENT_PETRIFICATION, 17000);
                         if (IsHeroic())
-                            events.ScheduleEvent(EVENT_CRYSTALS, 7000);
+                            events.ScheduleEvent(EVENT_CRYSTALS, 10000);
 
                         fightInProgress = true;
                         break;
@@ -196,8 +197,8 @@ class boss_stone_guard_controler : public CreatureScript
                         pInstance->DoRemoveAurasDueToSpellOnPlayers(SPELL_COBALT_PETRIFICATION_BAR);
                         pInstance->DoRemoveAurasDueToSpellOnPlayers(SPELL_TILES_AURA_EFFECT);
 
+						me->CastSpell(me, ACHIEVEMENT_STONE_GUARD_KILL, true);
                         pInstance->SetBossState(DATA_STONE_GUARD_EVENT, DONE);
-
                         fightInProgress = false;
 
                         // Removing Crystals
@@ -224,7 +225,7 @@ class boss_stone_guard_controler : public CreatureScript
                         {
                             if (powDownCount)
                             {
-                                if (powDownCount == 2 || guardian->GetHealthPct() < 40.0f)
+                                if (powDownCount == 2 || guardian->GetHealthPct() < 60.0f)
                                 {
                                     // Removing Tiles
                                     me->RemoveAllDynObjects();
@@ -582,7 +583,7 @@ class boss_generic_guardian : public CreatureScript
             {
                 for (uint32 entry: guardiansEntry)
                     if (entry != me->GetEntry())
-                        if (Creature* gardian = GetClosestCreatureWithEntry(me, entry, 12.0f, true))
+                        if (Creature* gardian = GetClosestCreatureWithEntry(me, entry, 40.0f, true))
                             return true;
 
                 return false;
@@ -907,7 +908,7 @@ class mob_tiling_creature : public CreatureScript
                         if (Creature* controller = me->GetMap()->GetCreature(pInstance->GetData64(NPC_STONE_GUARD_CONTROLER)))
                             controller->CastSpell(me, SPELL_TILES_DISPLAYED, false);
 
-                        // me->CastSpell(me, SPELL_TILES_DISPLAYED, false);
+                         //me->CastSpell(me, SPELL_TILES_DISPLAYED, false); // estaba desativado
 
                         std::list<Player*> playerList;
                         GetPlayerListInGrid(playerList, me, 5000.0f);

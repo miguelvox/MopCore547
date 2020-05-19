@@ -129,10 +129,10 @@ int Master::Run()
     BigNumber seed1;
     seed1.SetRand(16 * 8);
 
-    sLog->outInfo(LOG_FILTER_WORLDSERVER, "MopCore547 (worldserver-daemon)", _FULLVERSION);
+    sLog->outInfo(LOG_FILTER_WORLDSERVER, "MopCore(1.0.0) (worldserver-daemon)", _FULLVERSION);
     sLog->outInfo(LOG_FILTER_WORLDSERVER, "<Ctrl-C> to stop.\n");
 
-    sLog->outInfo(LOG_FILTER_WORLDSERVER, "MopCore 547");
+    sLog->outInfo(LOG_FILTER_WORLDSERVER, "MopCore(1.0.0)");
 
     /// worldserver PID file creation
     std::string pidfile = ConfigMgr::GetStringDefault("PidFile", "");

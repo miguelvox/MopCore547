@@ -786,6 +786,8 @@ class boss_spirit_kings : public CreatureScript
                     me->getThreatManager().resetAllAggro();
                     me->SetSpeed(MOVE_RUN, 0.0f, true);
                     me->SetSpeed(MOVE_WALK, 0.0f, true);
+					me->setFaction(35); // parar combate espiritu anterior.
+					me->CombatStop(); // parar combate.
 
                     if (pInstance)
                         pInstance->SendEncounterUnit(ENCOUNTER_FRAME_DISENGAGE, me);

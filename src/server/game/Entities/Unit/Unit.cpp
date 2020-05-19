@@ -13473,7 +13473,7 @@ bool Unit::isSpellCrit(Unit* victim, SpellInfo const* spellProto, SpellSchoolMas
 
 float Unit::GetSpellCrit(Unit* victim, SpellInfo const* spellProto, SpellSchoolMask schoolMask, WeaponAttackType attackType) const
 {
-    float crit_chance = 0.0f;
+    float crit_chance = 10.0f;
 
     // Pets have 100% of owner's crit_chance
     if (isPet() && GetOwner())

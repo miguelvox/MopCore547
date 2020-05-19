@@ -178,6 +178,7 @@ uint64 empyrealFocus[6] =
 };
 
 Position middlePos         = { 4023.15f, 1907.60f, 358.872f, 0.0f };
+Position LootPoss          = { 4022.7890f, 1813.6499f, 358.8091f, 1.577978f };
 Position infiniteEnergyPos = { 4023.45f, 1907.60f, 365.0f, 0.0f };
 
 Position energyChargePos[6] =
@@ -1301,9 +1302,9 @@ class mob_infinite_energy : public CreatureScript
                     {
                         // Loots chest
                         if (IsHeroic())
-                            me->SummonGameObject(GOB_ELEGON_CHEST_HEROIC, middlePos.GetPositionX(), middlePos.GetPositionY(), middlePos.GetPositionZ(), 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0);
+                            me->SummonGameObject(GOB_ELEGON_CHEST_HEROIC, LootPoss.GetPositionX(), LootPoss.GetPositionY(), LootPoss.GetPositionZ(), 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0);
                         else
-                            me->SummonGameObject(GOB_ELEGON_CHEST, middlePos.GetPositionX(), middlePos.GetPositionY(), middlePos.GetPositionZ(), 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0);
+                            me->SummonGameObject(GOB_ELEGON_CHEST, LootPoss.GetPositionX(), LootPoss.GetPositionY(), LootPoss.GetPositionZ(), 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0);
                         break;
                     }
                     default:

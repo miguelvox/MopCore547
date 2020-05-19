@@ -1,5 +1,5 @@
 /*
- * Trinity Core and update by MoPCore Forums
+ * Trinity Core and update by WoWSource Forums
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the
@@ -475,10 +475,10 @@ public:
             {
             case NPC_JADE_FIRE:
                 creature->setFaction(14);
-                creature->SetDisplayId(11686);
+                //creature->SetDisplayId(11686);
                 creature->SetReactState(REACT_PASSIVE);
                 creature->CastSpell(creature, 107108, true);
-                creature->ForcedDespawn(5000);
+				
                 break;
             case BOSS_LIU_FLAMEHEART:
                 liuGuid = creature->GetGUID();

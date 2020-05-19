@@ -170,7 +170,7 @@ class boss_lorewalker_stonestep : public CreatureScript
                 {
                     event_go = true;
                     events.ScheduleEvent(EVENT_INTRO_0, 500);
-                    instance->SetData(TYPE_LOREWALKTER_STONESTEP, 1);
+                  //  instance->SetData(TYPE_LOREWALKTER_STONESTEP, 1);
                 }
             }
 

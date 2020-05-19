@@ -80,6 +80,7 @@
 #include "CalendarMgr.h"
 #include "BattlefieldMgr.h"
 #include "BlackMarketMgr.h"
+#include "StoreManager.h"
 
 ACE_Atomic_Op<ACE_Thread_Mutex, bool> World::m_stopEvent = false;
 uint8 World::m_ExitCode = SHUTDOWN_EXIT_CODE;
@@ -1378,6 +1379,9 @@ void World::SetInitialWorldSettings()
 {
     ///- Server startup begin
     uint32 startupBegin = getMSTime();
+	
+	///start tienda
+	Maelstrom::sStoreMgr->LoadStore();
 
     ///- Initialize the random number generator
     srand((unsigned int)time(NULL));
@@ -2169,7 +2173,7 @@ void World::SetInitialWorldSettings()
 
     sLog->outInfo(LOG_FILTER_GENERAL, "Loading realm name...");
 
-    m_realmName = "MoPCore v4 Mop";
+    m_realmName = "MoPCore v5 Mop";
     QueryResult realmResult = LoginDatabase.PQuery("SELECT name FROM realmlist WHERE id = %u", realmID);
     if (realmResult)
         m_realmName = (*realmResult)[0].GetString();

@@ -7,7 +7,6 @@
 # This program is distributed in the hope that it will be useful, but
 # WITHOUT ANY WARRANTY, to the extent permitted by law; without even the
 # implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-
 set(scripts_STAT_SRCS
   ${scripts_STAT_SRCS}
 # Mogushan Palace
@@ -98,7 +97,7 @@ set(scripts_STAT_SRCS
   Pandaria/ThroneOfThunder/boss_primordius.cpp
   Pandaria/ThroneOfThunder/boss_raden.cpp
   Pandaria/ThroneOfThunder/boss_twinconsorts.cpp
-# Siege of Orgrimmar
+  # Siege of Orgrimmar
   Pandaria/SiegeOfOrgrimmar/instance_siege_of_orgrimmar.cpp
   Pandaria/SiegeOfOrgrimmar/siege_of_orgrimmar.cpp
   Pandaria/SiegeOfOrgrimmar/siege_of_orgrimmar.h
@@ -131,6 +130,10 @@ set(scripts_STAT_SRCS
   Pandaria/WorldBosses/AugustCelestials/boss_niuzao.cpp
   Pandaria/WorldBosses/AugustCelestials/boss_xuen.cpp
   Pandaria/WorldBosses/AugustCelestials/boss_yu_lon.cpp
+# Islas
+  Pandaria/TimelessIsland/Spell_timeless.cpp
+  Pandaria/TimelessIsland/timeless_isle.cpp
+  Pandaria/isle_of_thunder.cpp
 # Zones
   Pandaria/Zones/zone_townlong_steppes.cpp
   Pandaria/Zones/zone_dread_wastes.cpp

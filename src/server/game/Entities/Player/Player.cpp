@@ -9083,7 +9083,7 @@ void Player::UpdateArea(uint32 newArea)
 
     // previously this was in UpdateZone (but after UpdateArea) so nothing will break
     pvpInfo.inNoPvPArea = false;
-    if (area && area->IsSanctuary())    // in sanctuary
+    if (area && area->IsSanctuary() || GetAreaId() == 2037)    // in sanctuary
     {
         SetByteFlag(UNIT_FIELD_BYTES_2, 1, UNIT_BYTE2_FLAG_SANCTUARY);
         pvpInfo.inNoPvPArea = true;
@@ -28408,12 +28408,14 @@ bool Player::IsKnowHowFlyIn(uint32 mapid, uint32 zone, uint32 spellId) const
         case 571: // Northrend
             return HasSpell(54197); // Cold Weather Flying
         case 530: // Outland
+              return true;
         case 870: // Pandaria
-		    return true;
+		    //return true;
             switch(zone)
             {
-                case 6757: // Timeless Isle
+                case 6757:  // Timeless Isle 6757
                 case 6661: // Isle of Giants
+					HasSpell(90265);
                     return false;
             }
             return HasSpell(115913); // Wisdom of the Four Winds

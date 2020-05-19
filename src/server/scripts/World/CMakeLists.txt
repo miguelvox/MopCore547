@@ -23,6 +23,7 @@ set(scripts_STAT_SRCS
   World/npc_companions.cpp
   World/npcs_special.cpp
   World/darkmoon_faire.cpp
+  World/legendary_cloak_scripts.cpp
 )
 
 message("  -> Prepared: World")

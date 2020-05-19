@@ -1262,10 +1262,10 @@ class npc_mount_vendor : public CreatureScript
 ## npc_rogue_trainer
 ######*/
 
-#define GOSSIP_HELLO_ROGUE1 "I wish to unlearn my talents"
-#define GOSSIP_HELLO_ROGUE2 "<Take the letter>"
-#define GOSSIP_HELLO_ROGUE3 "Purchase a Dual Talent Specialization."
-#define GOSSIP_HELLO_ROGUE4 "I wish to unlearn my specialization"
+#define GOSSIP_HELLO_ROGUE1 "Deseo olvidar mis talentos"
+#define GOSSIP_HELLO_ROGUE2 "<Tomar Carta>"
+#define GOSSIP_HELLO_ROGUE3 "Comprar una especializacion de talentos."
+#define GOSSIP_HELLO_ROGUE4 "Deseo olvidar mi especializacion"
 
 class npc_rogue_trainer : public CreatureScript
 {
@@ -1361,7 +1361,7 @@ class npc_rogue_trainer : public CreatureScript
 #define SPELL_AGI       23736                               //agi
 #define SPELL_FORTUNE   23765                               //faire fortune
 
-#define GOSSIP_HELLO_SAYGE  "Yes"
+#define GOSSIP_HELLO_SAYGE  "Si"
 #define GOSSIP_SENDACTION_SAYGE1    "Slay the Man"
 #define GOSSIP_SENDACTION_SAYGE2    "Turn him over to liege"
 #define GOSSIP_SENDACTION_SAYGE3    "Confiscate the corn"
@@ -1378,7 +1378,7 @@ class npc_rogue_trainer : public CreatureScript
 #define GOSSIP_SENDACTION_SAYGE14   "Take credit, keep gold"
 #define GOSSIP_SENDACTION_SAYGE15   "Take credit, share the gold"
 #define GOSSIP_SENDACTION_SAYGE16   "Let the knight take credit"
-#define GOSSIP_SENDACTION_SAYGE17   "Thanks"
+#define GOSSIP_SENDACTION_SAYGE17   "Gracias"
 
 class npc_sayge : public CreatureScript
 {
@@ -2654,9 +2654,9 @@ enum ePetTrainer
     TEXT_CONFIRM                = 7722
 };
 
-#define GOSSIP_PET1             "How do I train my pet?"
-#define GOSSIP_PET2             "I wish to untrain my pet."
-#define GOSSIP_PET_CONFIRM      "Yes, please do."
+#define GOSSIP_PET1             "Como puedo entrenar mi pet?"
+#define GOSSIP_PET2             "Quiero que mi pet olvide lo aprendido."
+#define GOSSIP_PET_CONFIRM      "Si, por favor hazlo."
 
 class npc_pet_trainer : public CreatureScript
 {
@@ -2854,8 +2854,8 @@ class npc_locksmith : public CreatureScript
 
 #define EXP_COST                100000 //10 00 00 copper (10golds)
 #define GOSSIP_TEXT_EXP         14736
-#define GOSSIP_XP_OFF           "I no longer wish to gain experience."
-#define GOSSIP_XP_ON            "I wish to start gaining experience again."
+#define GOSSIP_XP_OFF           "Deseo no ganar mas experiencia."
+#define GOSSIP_XP_ON            "Quiero empezar a ganar mas experiencia."
 
 class npc_experience : public CreatureScript
 {
@@ -3313,9 +3313,9 @@ class npc_generic_harpoon_cannon : public CreatureScript
 ## npc_experience
 ######*/
 
-#define GOSSIP_CHOOSE_FACTION     "I would like to choose my faction"
-#define GOSSIP_TP_STORMIND        "I would like to go to Stormwind"
-#define GOSSIP_TP_ORGRI           "I would like to go to Orgrimmar"
+#define GOSSIP_CHOOSE_FACTION     "Deseo elegir mi faccion"
+#define GOSSIP_TP_STORMIND        "Quiero ir a ventormenta"
+#define GOSSIP_TP_ORGRI           "Quiero ir a Orgrimmar"
 
 class npc_choose_faction : public CreatureScript
 {
@@ -3391,7 +3391,7 @@ class npc_choose_faction_after_shop : public CreatureScript
 #define GOSSIP_TEXT_EXP_MODIF    1587
 #define GOSSIP_TEXT_EXP_MODIF_OK 1588
 #define GOSSIP_TEXT_EXP_NORMAL   1589
-#define GOSSIP_ITEM_XP_CLOSE     "Good bye."
+#define GOSSIP_ITEM_XP_CLOSE     "Adios."
 
 class npc_rate_xp_modifier : public CreatureScript
 {
@@ -3405,14 +3405,14 @@ class npc_rate_xp_modifier : public CreatureScript
             for (uint32 i = 1; i < sWorld->getRate(RATE_XP_KILL); ++i)
             {
                 std::ostringstream gossipText;
-                gossipText << "I would like to change my rates" << i;
+                gossipText << "Deseo cambiar las rates de exp" << i;
                 pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, gossipText.str(), GOSSIP_SENDER_MAIN, i);
             }
 
             if (pPlayer->GetPersonnalXpRate())
             {
                 std::ostringstream gossipText;
-                gossipText << "I would like to restore my rates (" << sWorld->getRate(RATE_XP_KILL) << ")";
+                gossipText << "Quiero restaurar las rates (" << sWorld->getRate(RATE_XP_KILL) << ")";
                 pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, gossipText.str(), GOSSIP_SENDER_MAIN, 0);
             }
 

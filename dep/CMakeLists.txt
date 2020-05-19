@@ -22,8 +22,10 @@ if(SERVERS OR TOOLS)
   add_subdirectory(jemalloc)
   add_subdirectory(openssl)
   add_subdirectory(mysql)
+  add_subdirectory(libmpq)
 endif()
-  
+ add_subdirectory(recastnavigation)
+ 
 if(SERVERS)
   if(CMAKE_SYSTEM_NAME MATCHES "Windows")
     add_subdirectory(acelite)

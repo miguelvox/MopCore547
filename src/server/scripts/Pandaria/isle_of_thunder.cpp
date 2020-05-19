@@ -186,8 +186,10 @@ public:
 
         void Reset()
         {
-            me->SetBoundingRadius(100.0f);
-            me->SetCombatReach(25.0f);
+            //me->SetBoundingRadius(100.0f);
+			me->SetFloatValue(UNIT_FIELD_BOUNDING_RADIUS, 100.0f);
+			me->SetFloatValue(UNIT_FIELD_COMBAT_REACH, 25.0f);
+            //me->SetCombatReach(25.0f);
 
             me->CastSpell(me, SPELL_STATIC_SHIELD);
 
@@ -373,14 +375,14 @@ public:
 
             if (uiSpiritBoltsTimer <= diff)
             {
-                me->CastSpell(me->GetVictim(), SPELL_SPIRIT_BOLTS);
+                me->CastSpell(me->getVictim(), SPELL_SPIRIT_BOLTS);
                 uiSpiritBoltsTimer = 12*IN_MILLISECONDS;
             }
             else uiSpiritBoltsTimer -= diff;
 
             if (uiDarknessDarknessTimer <= diff)
             {
-                me->CastSpell(me->GetVictim(), SPELL_DARKNESS_DARKNESS);
+                me->CastSpell(me->getVictim(), SPELL_DARKNESS_DARKNESS);
                 uiDarknessDarknessTimer = 15*IN_MILLISECONDS;
             }
             else uiDarknessDarknessTimer -= diff;
@@ -428,7 +430,7 @@ public:
 
         void EnterCombat(Unit* /*who*/)
         {
-            me->CastSpell(me->GetVictim(), SPELL_LEAPING_REND);
+            me->CastSpell(me->getVictim(), SPELL_LEAPING_REND);
         }
 
         void UpdateAI(uint32 const diff)
@@ -499,14 +501,14 @@ public:
 
             if (uiUnleashBloodTimer <= diff)
             {
-                me->CastSpell(me->GetVictim(), SPELL_UNLEASH_BLOOD);
+                me->CastSpell(me->getVictim(), SPELL_UNLEASH_BLOOD);
                 uiUnleashBloodTimer = 18*IN_MILLISECONDS;
             }
             else uiUnleashBloodTimer -= diff;
 
             if (uiMutagenicBurstTimer <= diff)
             {
-                me->CastSpell(me->GetVictim(), SPELL_MUTAGENIC_BURST);
+                me->CastSpell(me->getVictim(), SPELL_MUTAGENIC_BURST);
                 uiMutagenicBurstTimer = 8*IN_MILLISECONDS;
             }
             else uiMutagenicBurstTimer -= diff;
@@ -562,14 +564,14 @@ public:
 
             if (uiShellSpinTimer <= diff)
             {
-                me->CastSpell(me->GetVictim(), SPELL_SHELL_SPIN);
+                me->CastSpell(me->getVictim(), SPELL_SHELL_SPIN);
                 uiShellSpinTimer = 10*IN_MILLISECONDS;
             }
             else uiShellSpinTimer -= diff;
 
             if (uiCrystallineShieldTimer <= diff)
             {
-                me->CastSpell(me->GetVictim(), SPELL_CRYSTALLINE_SHIELD);
+                me->CastSpell(me->getVictim(), SPELL_CRYSTALLINE_SHIELD);
                 uiCrystallineShieldTimer = 8*IN_MILLISECONDS;
             }
             else uiCrystallineShieldTimer -= diff;
@@ -634,7 +636,7 @@ public:
 
             if (uiPoundTimer <= diff)
             {
-                me->CastSpell(me->GetVictim(), SPELL_POUND);
+                me->CastSpell(me->getVictim(), SPELL_POUND);
                 uiPoundTimer = 12*IN_MILLISECONDS;
             }
             else uiPoundTimer -= diff;
@@ -685,7 +687,7 @@ public:
 
             if (uiOmenTimer <= diff)
             {
-                me->CastSpell(me->GetVictim(), SPELL_OMEN);
+                me->CastSpell(me->getVictim(), SPELL_OMEN);
                 uiOmenTimer = 130*IN_MILLISECONDS;
             }
             else uiOmenTimer -= diff;
@@ -748,7 +750,7 @@ public:
 
             if (uiBreakSpineTimer <= diff)
             {
-                me->CastSpell(me->GetVictim(), SPELL_BREAK_SPINE);
+                me->CastSpell(me->getVictim(), SPELL_BREAK_SPINE);
                 uiBreakSpineTimer = 20*IN_MILLISECONDS;
             }
             else uiBreakSpineTimer -= diff;
@@ -794,7 +796,7 @@ public:
 
         void EnterCombat(Unit* /*who*/)
         {
-            me->CastSpell(me->GetVictim(), SPELL_STORM_BOLT);
+            me->CastSpell(me->getVictim(), SPELL_STORM_BOLT);
         }
 
         void UpdateAI(uint32 const diff)
@@ -869,7 +871,7 @@ public:
 
             if (uiHorrificVisageTimer <= diff)
             {
-                me->CastSpell(me->GetVictim(), SPELL_HORRIFIC_VISAGE);
+                me->CastSpell(me->getVictim(), SPELL_HORRIFIC_VISAGE);
                 uiHorrificVisageTimer = 30*IN_MILLISECONDS;
             }
             else uiHorrificVisageTimer -= diff;
@@ -927,21 +929,21 @@ public:
 
             if (uiBloodyStrikeTimer <= diff)
             {
-                me->CastSpell(me->GetVictim(), SPELL_BLOODY_STRIKE);
+                me->CastSpell(me->getVictim(), SPELL_BLOODY_STRIKE);
                 uiBloodyStrikeTimer = 12*IN_MILLISECONDS;
             }
             else uiBloodyStrikeTimer -= diff;
 
             if (uiBloodboltTimer <= diff)
             {
-                me->CastSpell(me->GetVictim(), SPELL_BLOODBOLT);
+                me->CastSpell(me->getVictim(), SPELL_BLOODBOLT);
                 uiBloodboltTimer = 18*IN_MILLISECONDS;
             }
             else uiBloodboltTimer -= diff;
 
             if (uiMarkOfBloodTimer <= diff)
             {
-                me->CastSpell(me->GetVictim(), SPELL_MARK_OF_BLOOD);
+                me->CastSpell(me->getVictim(), SPELL_MARK_OF_BLOOD);
                 uiMarkOfBloodTimer = 30*IN_MILLISECONDS;
             }
             else uiMarkOfBloodTimer -= diff;
@@ -988,7 +990,7 @@ public:
 
             for (uint8 maxSpellsOwned = 0; maxSpellsOwned < MAX_ZANDALARIS_SPELLS_OWNED; maxSpellsOwned++)
             {
-                uint32 spellId = Trinity::Containers::SelectRandomContainerElement<std::vector<uint32> >(spellIds);
+                uint32 spellId = MoPCore::Containers::SelectRandomContainerElement<std::vector<uint32> >(spellIds);
                 me->CastSpell(me, spellId);
             }
 
@@ -1020,7 +1022,7 @@ public:
             if (uiHorrificVisageTimer <= diff)
             {
                 if (me->HasAura(SPELL_TRIBAL_MASK))
-                    me->CastSpell(me->GetVictim(), SPELL_HORRIFIC_VISAGE);
+                    me->CastSpell(me->getVictim(), SPELL_HORRIFIC_VISAGE);
 
                 uiHorrificVisageTimer = 30*IN_MILLISECONDS;
             }
@@ -1141,14 +1143,14 @@ public:
 
             if (uiSpiritSlashTimer <= diff)
             {
-                me->CastSpell(me->GetVictim(), SPELL_SPIRIT_SLASH);
+                me->CastSpell(me->getVictim(), SPELL_SPIRIT_SLASH);
                 uiSpiritSlashTimer = 10*IN_MILLISECONDS;
             }
             else uiSpiritSlashTimer -= diff;
 
             if (uiSpiritSWrathTimer <= diff)
             {
-                me->CastSpell(me->GetVictim(), SPELL_SPIRIT_S_WRATH);
+                me->CastSpell(me->getVictim(), SPELL_SPIRIT_S_WRATH);
                 uiSpiritSWrathTimer = 18*IN_MILLISECONDS;
             }
             else uiSpiritSWrathTimer -= diff;
@@ -1204,7 +1206,6 @@ void AddSC_isle_of_thunder()
 {
     new boss_nalak();
     new spell_lightning_tether();
-
     new npc_sunreaver_construct();
     new npc_mumta();
     new npc_thunder_pterodactyls();
@@ -1218,6 +1219,5 @@ void AddSC_isle_of_thunder()
     new npc_rasha();
     new npc_thunder_zandalaris();
     new npc_spirit_of_warlord_teng();
-
     new spell_incantation_of_gura();
 }

@@ -27,8 +27,12 @@ void AddSC_example_commandscript();
 
 // Custom
 void AddSC_arena_fast_start();
-void AddSC_duel_reset();
+void AddSC_Reset();
 void AddSC_event_april();
+void AddSC_npc_promo();
+void AddSC_teleguy();
+void AddSC_petguy();
+void AddSC_script_store();
 
 // Spells
 void AddSC_deathknight_spell_scripts();
@@ -948,6 +952,9 @@ void AddSC_lost_isle();
 /*
  * World of Warcraft Scripts (Mists of Pandaria)
  */
+void AddSC_timeless_spell(); // spell estatua
+void AddSC_timeless_isle(); // isla intemporal
+void AddSC_isle_of_thunder();  //isla del trueno
 
  // Mists of Pandaria World Bosses
 void AddSC_boss_sha_of_anger();
@@ -1865,6 +1872,10 @@ void AddNorthrendScripts()
 void AddPandariaScripts()
 {
 #ifdef SCRIPTS
+    AddSC_timeless_spell();                           // spell piedra
+    AddSC_timeless_isle();                           // Isla Intemporal
+	AddSC_isle_of_thunder();                         // Isle of thunder
+
     AddSC_boss_sha_of_anger();                      // Pandaria World Bosses
     AddSC_boss_galleon();
     AddSC_boss_nalak();
@@ -2013,7 +2024,11 @@ void AddCustomScripts()
 {
 #ifdef SCRIPTS
     AddSC_arena_fast_start();
-    AddSC_duel_reset();
+	AddSC_Reset();
     AddSC_event_april();
+	AddSC_npc_promo();
+	AddSC_teleguy();
+	AddSC_petguy();
+	AddSC_script_store();
 #endif
 }

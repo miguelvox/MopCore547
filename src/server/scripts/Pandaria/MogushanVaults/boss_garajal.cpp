@@ -237,7 +237,7 @@ class boss_garajal : public CreatureScript
                     {
                         events.CancelEvent(EVENT_SUMMON_TOTEM);
                         me->CastSpell(me, SPELL_FRENESIE, true);
-                        me->MonsterTextEmote("Gara'jal casts |cffba2200|Hspell:117752|h[Frenzy]|h|r !", 0, true);
+                        me->MonsterTextEmote("Gara'jal castea |cffba2200|Hspell:117752|h[Frenesi]|h|r !", 0, true);
                     }
                 }
             }
@@ -334,7 +334,7 @@ class boss_garajal : public CreatureScript
                             pInstance->DoRemoveAurasDueToSpellOnPlayers(SPELL_VOODOO_DOLL_SHARE);
 
                             events.ScheduleEvent(EVENT_VOODOO_DOLL, 5000);
-                            events.ScheduleEvent(EVENT_BANISHMENT, 90000);
+                            events.ScheduleEvent(EVENT_BANISHMENT, 120000);
                             break;
                         }
                         case EVENT_FINAL_DESTINATION:

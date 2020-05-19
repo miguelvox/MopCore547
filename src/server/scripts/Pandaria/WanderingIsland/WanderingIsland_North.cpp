@@ -3,7 +3,10 @@
 #include "ScriptedEscortAI.h"
 #include "SpellScript.h"
 
+
 #define ACTION_TALK 1
+#define GOSSIP_ITEM     "Estoy buscando una pelea."
+#define GOSSIP_JOAMI    "Te reto a una pelea."
 
 class mob_master_shang_xi : public CreatureScript
 {
@@ -169,7 +172,6 @@ class mob_tushui_trainee : public CreatureScript
         {
             return new mob_tushui_trainee_AI(creature);
         }
-
         struct mob_tushui_trainee_AI : public ScriptedAI
         {
             mob_tushui_trainee_AI(Creature* creature) : ScriptedAI(creature)
@@ -190,7 +192,7 @@ class mob_tushui_trainee : public CreatureScript
                 playerGUID = 0;
                 isInCombat = false;
                 me->SetReactState(REACT_DEFENSIVE);
-                me->setFaction(7);
+                me->setFaction(35);
                 me->SetFullHealth();
             }
 
@@ -260,6 +262,28 @@ class mob_tushui_trainee : public CreatureScript
                     me->ForcedDespawn(1000);
             }
         };
+		
+  bool OnGossipHello(Player* player, Creature* creature)
+        {
+            player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_ITEM, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);
+            player->SEND_GOSSIP_MENU(907, creature->GetGUID());
+
+            return true;
+        }
+
+        bool OnGossipSelect(Player* player, Creature* creature, uint32 /*sender*/, uint32 action)
+        {
+            player->PlayerTalkClass->ClearMenus();
+            if (action == GOSSIP_ACTION_INFO_DEF+1)
+            {
+                player->CLOSE_GOSSIP_MENU();
+                //Set our faction to hostile towards all
+                creature->setFaction(24);
+                creature->AI()->AttackStart(player);
+            }
+
+            return true;
+        }
 };
 
 class boss_jaomin_ro : public CreatureScript
@@ -306,12 +330,11 @@ public:
             isInFalcon = false;
             me->SetReactState(REACT_DEFENSIVE);
             me->SetDisplayId(39755);
-            me->setFaction(2357); //mechant!
-            me->CombatStop(true);
-
+            me->setFaction(35); //mechant!
+            me->CombatStop(true);           
             me->GetMotionMaster()->MovePoint(1, 1380.35f, 3170.68f, 136.93f);
-        }
-        
+			me->HandleEmote(EMOTE_STATE_STAND);
+        }       
         void DamageTaken(Unit* attacker, uint32& damage)
         {
             if (me->HealthBelowPctDamaged(30, damage) && !isInFalcon)
@@ -361,7 +384,6 @@ public:
                     case EVENT_HIT_CIRCLE: //baffe
                         if (me->getVictim())
                             me->CastSpell(me->getVictim(), 119301, true);
-
                         events.ScheduleEvent(EVENT_HIT_CIRCLE, 3000);
                         break;
                     case EVENT_FALCON: //attaque du faucon
@@ -372,17 +394,39 @@ public:
                         break;
                     case EVENT_RESET: //remechant
                         Reset();
+						me->SummonCreature(53566, 1379.780029f, 3216.7500f, 141.6100f, 4.556f, TEMPSUMMON_TIMED_OR_DEAD_DESPAWN, 40000);
                     	break;
                     case EVENT_CHECK_AREA:
                         if (me->GetAreaId() != 5843) // Grotte Paisible
-                            Reset();
+                        Reset();
                         break;
                 }
             }
             
             DoMeleeAttackIfReady();
         }
-    };
+    };	
+		 bool OnGossipHello(Player* player, Creature* creature)
+        {
+            player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_JOAMI, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);
+            player->SEND_GOSSIP_MENU(907, creature->GetGUID());
+
+            return true;
+        }		
+		 bool OnGossipSelect(Player* player, Creature* creature, uint32 /*sender*/, uint32 action)
+        {
+            player->PlayerTalkClass->ClearMenus();
+            if (action == GOSSIP_ACTION_INFO_DEF+1)
+            {
+                player->CLOSE_GOSSIP_MENU();
+                //Set our faction to hostile towards all
+                creature->setFaction(24);
+                creature->AI()->AttackStart(player);
+            }
+
+            return true;
+        }
+		
 };
 
 class mob_attacker_dimwind : public CreatureScript
@@ -522,7 +566,7 @@ public:
                         if(VerifyMobs()) // No more mobs, objective completed
                         {
                     	    me->HandleEmote(EMOTE_STATE_STAND);
-                    	    me->MonsterYell("Thank you!", LANG_UNIVERSAL, 0);
+                    	    me->MonsterYell("Gracias!", LANG_UNIVERSAL, 0);
                         
                             std::list<Player*> PlayerList;
                             GetPlayerListInGrid(PlayerList, me, 20.0f);
@@ -1404,7 +1448,7 @@ class mob_huojin_trainee : public CreatureScript
                 punch = urand(500, 3000);
                 me->SetReactState(REACT_DEFENSIVE);
                 me->SetFullHealth();
-                me->setFaction(7);
+                me->setFaction(35);
                 isInCombat = false;
             }
 
@@ -1457,6 +1501,28 @@ class mob_huojin_trainee : public CreatureScript
                     me->ForcedDespawn(1000);
             }
         };
+		
+	  bool OnGossipHello(Player* player, Creature* creature)
+        {
+            player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_ITEM, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);
+            player->SEND_GOSSIP_MENU(907, creature->GetGUID());
+
+            return true;
+        }
+
+        bool OnGossipSelect(Player* player, Creature* creature, uint32 /*sender*/, uint32 action)
+        {
+            player->PlayerTalkClass->ClearMenus();
+            if (action == GOSSIP_ACTION_INFO_DEF+1)
+            {
+                player->CLOSE_GOSSIP_MENU();
+                //Set our faction to hostile towards all
+                creature->setFaction(24);
+                creature->AI()->AttackStart(player);
+            }
+
+            return true;
+        }	
 };
 
 class npc_merchant_lorvo : public CreatureScript

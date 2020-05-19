@@ -201,7 +201,7 @@ class boss_liu_flameheart : public CreatureScript
                     case EVENT_SERPENT_STRIKE:
                         {
                             me->CastSpell(me->getVictim(), SPELL_SERPENT_STRIKE, false);
-                            Map::PlayerList const& PlayerList = me->GetInstanceScript()->instance->GetPlayers();
+                           /*Map::PlayerList const& PlayerList = me->GetInstanceScript()->instance->GetPlayers();
 
                             if (!PlayerList.isEmpty())
                             {
@@ -213,7 +213,7 @@ class boss_liu_flameheart : public CreatureScript
                                     if (plr->GetDistance2d(me) < 10.f)
                                         plr->KnockbackFrom(me->GetPositionX(), me->GetPositionY(), 10, 10);
                                 }
-                            }
+                            }*/
                             events.ScheduleEvent(EVENT_SERPENT_STRIKE, 10000);
                             events.ScheduleEvent(EVENT_SERPENT_WAVE, 4000);
                         }
@@ -267,7 +267,7 @@ class boss_liu_flameheart : public CreatureScript
                         {
                             me->CastSpell(me->getVictim(), SPELL_JADE_SERPENT_STRIKE, false);
 
-                            Map::PlayerList const& PlayerList = me->GetInstanceScript()->instance->GetPlayers();
+                           /* fv const& PlayerList = me->GetInstanceScript()->instance->GetPlayers();
 
                             if (!PlayerList.isEmpty())
                             {
@@ -279,7 +279,7 @@ class boss_liu_flameheart : public CreatureScript
                                     if (plr->GetDistance2d(me) < 10.f)
                                         plr->KnockbackFrom(me->GetPositionX(), me->GetPositionY(), 10, 10);
                                 }
-                            }
+                            }*/
                             events.ScheduleEvent(EVENT_JADE_SERPENT_STRIKE, 10000);
                             events.ScheduleEvent(EVENT_JADE_SERPENT_WAVE, 4000);
                         }

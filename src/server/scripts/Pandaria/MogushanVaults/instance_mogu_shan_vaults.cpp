@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012 - 2016 MoPCore
+ * Copyright (C) 2012 - 2016 WoWSource
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the
@@ -78,6 +78,8 @@ Position woeRageSpawnPos[3] =
     {3812.32f, 1563.90f, 367.64f, 6.11f}
 };
 
+Position QiangTheMerciles = { 4226.33f, 1626.28f, 438.856f, 4.72348f };
+
 Position woeMiddleSpawnPos[1] =
 {
     {3812.60f, 1536.72f, 367.64f, 0.16f}
@@ -85,7 +87,7 @@ Position woeMiddleSpawnPos[1] =
 
 #define DIST_BETWEEN_TWO_Z        32.39f
 #define ACHIEVEMENT_SHOWMOVES     6455
-#define MAX_STONE_GUARDS_TURNOVER 3
+#define MAX_STONE_GUARDS_TURNOVER 4
 
 class instance_mogu_shan_vaults : public InstanceMapScript
 {
@@ -190,6 +192,10 @@ class instance_mogu_shan_vaults : public InstanceMapScript
                 spiritKingsGUIDs.clear();
             }
 
+			//    NPC_JASPER   = 59915,
+			//   NPC_JADE = 60043,
+			//	 NPC_AMETHYST = 60047,
+			//	 NPC_COBALT = 60051,
             void OnCreatureCreate(Creature* creature)
             {
                 switch (creature->GetEntry())
@@ -242,9 +248,9 @@ class instance_mogu_shan_vaults : public InstanceMapScript
                     case NPC_SPIRIT_GUID_CONTROLER:
                         spiritKingsControlerGuid = creature->GetGUID();
                         break;
+					case NPC_QIANG:
                     case NPC_ZIAN:
                     case NPC_MENG:
-                    case NPC_QIANG:
                     case NPC_SUBETAI:
                         spiritKingsGUIDs.push_back(creature->GetGUID());
                         break;
@@ -340,7 +346,7 @@ class instance_mogu_shan_vaults : public InstanceMapScript
 
                 switch (id)
                 {
-                    case DATA_STONE_GUARD_EVENT:
+                case DATA_STONE_GUARD_EVENT:
                     {
                         switch (state)
                         {
@@ -366,25 +372,41 @@ class instance_mogu_shan_vaults : public InstanceMapScript
                         }
                         break;
                     }
-                    case DATA_SPIRIT_KINGS_EVENT:
-                    {
-                        switch (state)
-                        {
-                            case IN_PROGRESS:
-                                if (Creature* spiritKingsControler = instance->GetCreature(spiritKingsControlerGuid))
-                                    spiritKingsControler->AI()->DoAction(ACTION_ENTER_COMBAT);
-                                break;
-                            case DONE:
-                                if (GameObject* celestical = instance->GetGameObject(celestialCommandGuid))
-                                    celestical->RemoveFlag(GAMEOBJECT_FLAGS, GO_FLAG_NOT_SELECTABLE);
-                                if (GameObject* ancientPanel = instance->GetGameObject(ancientControlPanelGuid))
-                                    ancientPanel->RemoveFlag(GAMEOBJECT_FLAGS, GO_FLAG_NOT_SELECTABLE);
-                                break;
-                            default:
-                                break;
-                        }
-                        break;
-                    }
+				case DATA_GARAJAL_EVENT:
+				{
+					switch (state)
+					{
+					case IN_PROGRESS:
+						break;
+					case DONE:
+						if (Creature* Qiang = instance->SummonCreature(NPC_QIANG, QiangTheMerciles))
+                            Qiang->AI()->DoAction(ACTION_FIRST_FIGHT);
+							//spiritKingsControler->SummonCreature(NPC_QIANG, 4226.33f, 1626.28f, 438.856f, 4.72348f);
+						break;
+					default:
+						break;
+					}
+					break;
+				} 
+				case DATA_SPIRIT_KINGS_EVENT:
+				{
+					switch (state)
+					{
+					case IN_PROGRESS:
+						if (Creature* spiritKingsControler = instance->GetCreature(spiritKingsControlerGuid))
+							spiritKingsControler->AI()->DoAction(ACTION_ENTER_COMBAT);
+						break;
+					case DONE:
+						if (GameObject* celestical = instance->GetGameObject(celestialCommandGuid))
+							celestical->RemoveFlag(GAMEOBJECT_FLAGS, GO_FLAG_NOT_SELECTABLE);
+						if (GameObject* ancientPanel = instance->GetGameObject(ancientControlPanelGuid))
+							ancientPanel->RemoveFlag(GAMEOBJECT_FLAGS, GO_FLAG_NOT_SELECTABLE);
+						break;
+					default:
+						break;
+					}
+					break;
+				}
                     case DATA_ELEGON_EVENT:
                     {
                         switch (state)
